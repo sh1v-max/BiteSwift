@@ -1,6 +1,4 @@
-Sure! Here’s a similar Markdown file for React:
 
----
 
 # React: An Introduction
 
