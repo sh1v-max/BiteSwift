@@ -40,7 +40,7 @@
 
 A live version of the application is deployed and available for you to experience:
 
-**[https://biteswift.vercel.app/](https://biteswift.vercel.app/)**  <!-- Replace with your actual deployment URL -->
+**[https://biteswift.vercel.app/](https://yourbiteswift.netlify.app/)**  <!-- Replace with your actual deployment URL -->
 
 <!-- A GIF is highly recommended to immediately show off your project's functionality -->
 <div align="center">
