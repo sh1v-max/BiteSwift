@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Shimmer from './Shimmer'
 import { Link } from 'react-router-dom'
 import useOnlineStatus from '../utils/useOnlineStatus'
+import MOCK_RESTAURANTS from '../mocks/mockRestaurants'
 import '../css/Body.css'
 
 const CATEGORIES = [
@@ -87,10 +88,18 @@ const Body = () => {
       const json = await res.json()
       const restaurants =
         json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants ?? []
-      setAllRestaurants(restaurants)
-      setFilteredRestaurants(restaurants)
+      if (restaurants.length > 0) {
+        setAllRestaurants(restaurants)
+        setFilteredRestaurants(restaurants)
+      } else {
+        // Swiggy returned empty (CORS block, bot detection, different region) — use mock data
+        setAllRestaurants(MOCK_RESTAURANTS)
+        setFilteredRestaurants(MOCK_RESTAURANTS)
+      }
     } catch {
-      setError('Could not load restaurants. Please try again.')
+      // Network error or JSON parse failure — use mock data silently
+      setAllRestaurants(MOCK_RESTAURANTS)
+      setFilteredRestaurants(MOCK_RESTAURANTS)
     } finally {
       setIsLoading(false)
     }

@@ -28,7 +28,7 @@ const RestaurantCard = ({ resData }) => {
       <div className="res-card-img-wrap">
         <img
           className="res-card-img"
-          src={IMG_CDN_URL + cloudinaryImageId}
+          src={cloudinaryImageId?.startsWith('http') ? cloudinaryImageId : IMG_CDN_URL + cloudinaryImageId}
           alt={name}
           loading="lazy"
         />

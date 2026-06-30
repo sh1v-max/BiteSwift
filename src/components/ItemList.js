@@ -49,7 +49,7 @@ const ItemList = ({ items }) => {
             <div className="flex flex-col items-center justify-center">
               <img
                 className="w-[150px] h-[100px] object-cover rounded-[8px]"
-                src={IMG_CDN_URL + imageId}
+                src={imageId?.startsWith('http') ? imageId : IMG_CDN_URL + imageId}
                 alt={name}
               />
               <button
