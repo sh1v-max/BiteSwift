@@ -1,5 +1,5 @@
 [build]
-  command       = "npm run build"
+  command       = "npm run build; test -f dist/index.html"
   publish       = "dist"
 
 # Send all routes to index.html so React Router handles them client-side.
