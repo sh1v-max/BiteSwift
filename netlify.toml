@@ -1,0 +1,10 @@
+[build]
+  command       = "npm run build"
+  publish       = "dist"
+
+# Send all routes to index.html so React Router handles them client-side.
+# Without this, refreshing /about or /restaurant/:id gives a 404 on Netlify.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
