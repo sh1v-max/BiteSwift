@@ -4,7 +4,7 @@
   "description": "namaste react by Akshay Saini",
   "scripts": {
     "start": "parcel index.html",
-    "build": "rm -rf .parcel-cache && parcel build index.html --no-minify",
+    "build": "rm -rf .parcel-cache && parcel build index.html --no-optimize",
     "test": "jest",
     "watch-test":"jest --watch"
   },
