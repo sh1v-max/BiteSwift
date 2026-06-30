@@ -1,0 +1,163 @@
+/* ═══════════════════════════════════════════════════════
+   FOOTER  (Ember Noir theme)
+═══════════════════════════════════════════════════════ */
+
+.footer {
+  background: var(--bs-dark-1);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-inner {
+  max-width: var(--bs-max-w);
+  margin: 0 auto;
+  padding: 56px 24px 40px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+/* ── Brand column ──────────────────────────────────────── */
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--bs-text-inv);
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+
+.footer-logo span { color: var(--bs-amber); }
+
+.footer-tagline {
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.4);
+  max-width: 280px;
+  margin: 0 0 24px;
+  font-size: 0.88rem;
+}
+
+/* Social */
+.footer-social { display: flex; gap: 12px; margin-bottom: 28px; }
+
+.footer-social-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.footer-social-icon:hover {
+  background: rgba(232, 147, 10, 0.18);
+  border-color: var(--bs-amber);
+  transform: translateY(-2px);
+}
+
+/* App badges */
+.footer-app-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.app-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--bs-radius);
+  cursor: pointer;
+  color: var(--bs-text-inv);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.app-badge:hover {
+  background: rgba(232, 147, 10, 0.12);
+  border-color: rgba(232, 147, 10, 0.35);
+}
+
+.badge-icon { font-size: 1.4rem; line-height: 1; }
+
+.app-badge span:last-child {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.app-badge small {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  display: block;
+}
+
+/* ── Link columns ──────────────────────────────────────── */
+
+.footer-col-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 18px;
+}
+
+.footer-col-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.18s;
+}
+
+.footer-link:hover { color: var(--bs-amber); }
+
+/* ── Bottom bar ────────────────────────────────────────── */
+
+.footer-bottom {
+  max-width: var(--bs-max-w);
+  margin: 0 auto;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.28);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-bottom-right { white-space: nowrap; }
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 520px) {
+  .footer-inner { grid-template-columns: 1fr; padding: 40px 16px 28px; gap: 32px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+}

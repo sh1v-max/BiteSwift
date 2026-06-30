@@ -1,21 +1,60 @@
 @import "tailwindcss";
 
-*, *::before, *::after {
-  box-sizing: border-box;
+/* ═══════════════════════════════════════════════════════
+   DESIGN TOKENS  (Ember Noir theme)
+═══════════════════════════════════════════════════════ */
+
+:root {
+  /* Backgrounds */
+  --bs-bg:        #FAF7F2;
+  --bs-bg-alt:    #F2EDE5;
+  --bs-card:      #FFFFFF;
+  --bs-border:    #E8E0D4;
+
+  /* Dark surfaces */
+  --bs-dark-1:    #0F0D09;
+  --bs-dark-2:    #1C1810;
+  --bs-dark-3:    #2A2115;
+
+  /* Brand — Saffron Amber */
+  --bs-amber:     #E8930A;
+  --bs-amber-dk:  #C97808;
+  --bs-amber-lt:  #FBB95E;
+  --bs-amber-bg:  rgba(232, 147, 10, 0.08);
+
+  /* Semantic */
+  --bs-success:   #16A34A;
+  --bs-warn:      #D97706;
+  --bs-danger:    #DC2626;
+
+  /* Text */
+  --bs-text-1:    #1A1610;
+  --bs-text-2:    #4A3F35;
+  --bs-text-3:    #8A7B70;
+  --bs-text-inv:  #FFFFFF;
+
+  /* Layout */
+  --bs-nav-h:     64px;
+  --bs-max-w:     1200px;
+  --bs-radius-sm: 8px;
+  --bs-radius:    12px;
+  --bs-radius-lg: 16px;
+  --bs-radius-xl: 20px;
+  --bs-radius-pill: 99px;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
+/* ── Reset ──────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+a { text-decoration: none; color: inherit; }
 
 body {
-  /* padding-top pushes ALL page content below the fixed 64px navbar.
-     margin-top would push the box but the body bg still starts at y=0,
-     so transparent navbar would show the body bg color — not what we want. */
-  padding-top: 64px;
-  font-family: "Poppins", sans-serif;
-  background-color: #f5f5f0;
+  padding-top: var(--bs-nav-h);
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bs-bg);
+  color: var(--bs-text-1);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -31,18 +70,16 @@ body {
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Transparent state — over dark hero */
 .navbar-transparent {
   background: transparent;
   box-shadow: none;
 }
 
-/* Solid state — scrolled or non-home pages */
 .navbar-solid {
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(250, 247, 242, 0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 0 rgba(26, 22, 16, 0.1);
 }
 
 /* ── Inner layout ───────────────────────────────────────── */
@@ -51,10 +88,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
+  max-width: var(--bs-max-w);
   margin: 0 auto;
   padding: 0 24px;
-  height: 64px;
+  height: var(--bs-nav-h);
   gap: 32px;
 }
 
@@ -68,26 +105,20 @@ body {
   flex-shrink: 0;
 }
 
-.logo-icon {
-  font-size: 1.35rem;
-  line-height: 1;
-}
+.logo-icon { font-size: 1.35rem; line-height: 1; }
 
 .logo-text {
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #111827;
+  color: var(--bs-text-1);
   transition: color 0.25s;
 }
 
-.logo-accent {
-  color: #e63950;
-}
+.logo-accent { color: var(--bs-amber); }
 
-/* In transparent mode, "Bite" turns white; "Swift" stays red — both readable on dark */
 .navbar-transparent .navbar-logo .logo-text {
-  color: #ffffff !important;
+  color: var(--bs-text-inv) !important;
 }
 
 /* ── Desktop nav links ──────────────────────────────────── */
@@ -105,20 +136,20 @@ body {
   padding: 6px 14px;
   font-size: 0.88rem;
   font-weight: 500;
-  color: #374151;
-  border-radius: 8px;
+  color: var(--bs-text-2);
+  border-radius: var(--bs-radius-sm);
   transition: color 0.18s, background 0.18s;
   white-space: nowrap;
 }
 
 .nav-link:hover {
-  color: #e63950;
-  background: rgba(230, 57, 80, 0.06);
+  color: var(--bs-amber);
+  background: var(--bs-amber-bg);
 }
 
-/* Active link — solid navbar */
+/* Active — solid navbar */
 .navbar-solid .nav-link-active {
-  color: #e63950;
+  color: var(--bs-amber);
   font-weight: 600;
 }
 
@@ -129,22 +160,22 @@ body {
   left: 14px;
   right: 14px;
   height: 2px;
-  background: #e63950;
-  border-radius: 99px;
+  background: var(--bs-amber);
+  border-radius: var(--bs-radius-pill);
 }
 
-/* Transparent state — all links white, active link bright white + underline */
+/* Transparent state — white links */
 .navbar-transparent .navbar-nav .nav-link {
   color: rgba(255, 255, 255, 0.82);
 }
 
 .navbar-transparent .navbar-nav .nav-link:hover {
-  color: #ffffff;
+  color: var(--bs-text-inv);
   background: rgba(255, 255, 255, 0.1);
 }
 
 .navbar-transparent .navbar-nav .nav-link-active {
-  color: #ffffff;
+  color: var(--bs-text-inv);
   font-weight: 600;
 }
 
@@ -155,8 +186,8 @@ body {
   left: 14px;
   right: 14px;
   height: 2px;
-  background: #ffffff;
-  border-radius: 99px;
+  background: var(--bs-amber-lt);
+  border-radius: var(--bs-radius-pill);
 }
 
 /* ── Right cluster ──────────────────────────────────────── */
@@ -176,8 +207,8 @@ body {
   flex-shrink: 0;
 }
 
-.status-online  { background: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
-.status-offline { background: #ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.25); }
+.status-online  { background: var(--bs-success); box-shadow: 0 0 0 2px rgba(22,163,74,0.25); }
+.status-offline { background: var(--bs-danger);  box-shadow: 0 0 0 2px rgba(220,38,38,0.25); }
 
 /* Cart */
 .cart-btn {
@@ -187,29 +218,19 @@ body {
   justify-content: center;
   width: 38px;
   height: 38px;
-  border-radius: 10px;
-  color: #374151;
+  border-radius: var(--bs-radius-sm);
+  color: var(--bs-text-2);
   transition: background 0.18s, color 0.18s;
 }
 
 .cart-btn:hover {
-  background: rgba(230, 57, 80, 0.08);
-  color: #e63950;
+  background: var(--bs-amber-bg);
+  color: var(--bs-amber);
 }
 
-.navbar-transparent .cart-btn {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.navbar-transparent .cart-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-/* Badge border matches the navbar bg in each state */
-.navbar-transparent .cart-badge {
-  border-color: transparent;
-}
+.navbar-transparent .cart-btn         { color: rgba(255, 255, 255, 0.9); }
+.navbar-transparent .cart-btn:hover   { background: rgba(255,255,255,0.12); color: var(--bs-text-inv); }
+.navbar-transparent .cart-badge       { border-color: transparent; }
 
 .cart-badge {
   position: absolute;
@@ -218,16 +239,16 @@ body {
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
-  background: #e63950;
-  color: #fff;
+  background: var(--bs-amber);
+  color: var(--bs-text-inv);
   font-size: 0.6rem;
   font-weight: 700;
-  border-radius: 99px;
+  border-radius: var(--bs-radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
-  border: 1.5px solid white;
+  border: 1.5px solid var(--bs-card);
 }
 
 /* Auth button */
@@ -235,32 +256,31 @@ body {
   padding: 7px 18px;
   font-size: 0.82rem;
   font-weight: 600;
-  border-radius: 99px;
+  font-family: inherit;
+  border-radius: var(--bs-radius-pill);
   cursor: pointer;
-  transition: all 0.18s;
-  border: 1.5px solid #e63950;
-  background: #e63950;
-  color: white;
+  transition: background 0.18s, border-color 0.18s, transform 0.15s;
+  border: 1.5px solid var(--bs-amber);
+  background: var(--bs-amber);
+  color: var(--bs-text-inv);
   white-space: nowrap;
 }
 
 .auth-btn:hover {
-  background: #c42d42;
-  border-color: #c42d42;
+  background: var(--bs-amber-dk);
+  border-color: var(--bs-amber-dk);
 }
 
 .auth-btn-outline {
   background: transparent;
-  color: #e63950;
+  color: var(--bs-amber);
 }
 
 .auth-btn-outline:hover {
-  background: rgba(230, 57, 80, 0.08);
+  background: var(--bs-amber-bg);
 }
 
-/* Auth button is always solid red — readable on both dark hero and white navbar */
-
-/* Hamburger — hidden on desktop */
+/* Hamburger */
 .hamburger {
   display: none;
   align-items: center;
@@ -270,23 +290,15 @@ body {
   border: none;
   background: none;
   cursor: pointer;
-  border-radius: 10px;
-  color: #374151;
+  border-radius: var(--bs-radius-sm);
+  color: var(--bs-text-2);
   transition: background 0.18s;
 }
 
-.hamburger:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
+.hamburger:hover { background: var(--bs-bg-alt); }
 
-.navbar-transparent .hamburger {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.navbar-transparent .hamburger:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
+.navbar-transparent .hamburger       { color: rgba(255,255,255,0.9); }
+.navbar-transparent .hamburger:hover { background: rgba(255,255,255,0.12); color: var(--bs-text-inv); }
 
 /* ── Mobile drawer ──────────────────────────────────────── */
 
@@ -294,7 +306,7 @@ body {
   display: none;
   flex-direction: column;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(250, 247, 242, 0.98);
   backdrop-filter: blur(12px);
   padding: 0 16px;
   max-height: 0;
@@ -306,7 +318,7 @@ body {
 .mobile-drawer.drawer-open {
   max-height: 400px;
   padding: 12px 16px 20px;
-  border-top-color: #f0f0f0;
+  border-top-color: var(--bs-border);
 }
 
 .drawer-nav {
@@ -318,8 +330,8 @@ body {
 .drawer-nav .nav-link {
   padding: 10px 14px;
   font-size: 0.95rem;
-  border-radius: 10px;
-  color: #374151;
+  border-radius: var(--bs-radius);
+  color: var(--bs-text-2);
 }
 
 .drawer-auth-btn {
@@ -327,7 +339,7 @@ body {
   width: 100%;
   padding: 10px;
   font-size: 0.9rem;
-  border-radius: 12px;
+  border-radius: var(--bs-radius);
 }
 
 /* ── Responsive ─────────────────────────────────────────── */
@@ -335,66 +347,12 @@ body {
 @media (max-width: 768px) {
   .navbar-nav,
   .auth-btn:not(.drawer-auth-btn),
-  .status-dot {
-    display: none;
-  }
+  .status-dot { display: none; }
 
-  .hamburger {
-    display: flex;
-  }
+  .hamburger    { display: flex; }
+  .mobile-drawer { display: flex; }
 
-  .mobile-drawer {
-    display: flex;
-  }
-
-  .navbar-inner {
-    padding: 0 16px;
-    gap: 12px;
-  }
-}
-
-
-/* ======================= Footer ==================== */
-.footer {
-  background-color: rgba(225, 225, 225);
-  padding: 10px 0;
-  text-align: center;
-}
-
-.footer-container {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1000px;
-  margin: auto;
-  padding: 10px;
-  color: #303030;
-}
-
-.footer-logo h2 {
-  color: #ff6600;
-}
-
-.footer-links {
-  display: flex;
-  gap: 40px;
-}
-
-.footer-links h4 {
-  margin-bottom: 10px;
-}
-
-.footer-links ul {
-  list-style: none;
-}
-
-.footer-links li {
-  margin-bottom: 5px;
-  cursor: pointer;
-}
-
-.footer-links li:hover {
-  text-decoration: underline;
-  color: #ff4d00;
+  .navbar-inner { padding: 0 16px; gap: 12px; }
 }
 
 /* =============About page======================== */
