@@ -1,70 +1,378 @@
-/* ===============search and filter===================== */
+/* ═══════════════════════════════════════════════════════
+   HOME PAGE
+═══════════════════════════════════════════════════════ */
 
-.search {
+.home-page {
+  min-height: 100vh;
+  background: #f5f5f0;
+  /* body has padding-top: 64px so all pages start below the navbar.
+     We pull home-page back up by 64px so the hero's dark gradient
+     fills the space behind the transparent navbar instead of showing
+     the cream body background there. */
+  margin-top: -64px;
+}
+
+/* ── Offline / Error / Empty ──────────────────────────── */
+
+.offline-screen {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin: 20px auto;
-  width: 100%;
-  padding-top: 20px;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 12px;
+  color: #374151;
 }
 
-.search input {
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  outline: none;
-  width: 250px;
+.offline-screen .offline-icon {
+  font-size: 3rem;
 }
 
-.search button {
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: #ff6600;
+.offline-screen h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.offline-screen p {
+  color: #6b7280;
+  margin: 0;
+}
+
+.error-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 80px 24px;
+  color: #374151;
+  text-align: center;
+}
+
+.error-state span,
+.empty-state span {
+  font-size: 3rem;
+}
+
+.error-state p,
+.empty-state p {
+  color: #6b7280;
+  margin: 0;
+}
+
+.empty-state h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.error-state button,
+.empty-state button {
+  margin-top: 8px;
+  padding: 10px 28px;
+  background: #e63950;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 99px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  transition: background 0.2s;
 }
 
-.search-btn::placeholder {
-  color: gray;
-  font-style: italic;
-  font-size: 14px;
-  opacity: 0.7;
+.error-state button:hover,
+.empty-state button:hover {
+  background: #c42d42;
 }
 
-.search button:hover {
-  background-color: #cc5500;
+/* ── Hero ─────────────────────────────────────────────── */
+
+.hero {
+  background: linear-gradient(135deg, #0d0d1a 0%, #1a1535 55%, #0e2350 100%);
+  /* 64px navbar height + 60px visual breathing room above the headline */
+  padding: 124px 24px 0;
+  overflow: hidden;
+  position: relative;
 }
+
+/* subtle dot-grid texture overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: 48px;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 16px;
+}
+
+.hero-headline {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+}
+
+.hero-accent {
+  color: #e63950;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 36px;
+  line-height: 1.6;
+}
+
+/* Search bar */
+.hero-search {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 99px;
+  padding: 6px 6px 6px 20px;
+  max-width: 560px;
+  margin: 0 auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  gap: 8px;
+}
+
+.hero-search-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.hero-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #111827;
+  background: transparent;
+  min-width: 0;
+}
+
+.hero-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.hero-search-clear {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.hero-search-clear:hover {
+  color: #374151;
+}
+
+.hero-search button.search-go {
+  flex-shrink: 0;
+  padding: 10px 24px;
+  background: #e63950;
+  color: white;
+  border: none;
+  border-radius: 99px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hero-search button.search-go:hover {
+  background: #c42d42;
+}
+
+/* Category scroll */
+.category-scroll-wrapper {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 0;
+}
+
+.category-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 28px 8px 32px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.category-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.category-pill:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.category-pill.active {
+  background: #e63950;
+  border-color: #e63950;
+  color: white;
+}
+
+.cat-emoji {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.cat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+/* ── Filter bar ───────────────────────────────────────── */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 4px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: 7px 16px;
+  border-radius: 99px;
+  border: 1.5px solid #d1d5db;
+  background: white;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.filter-chip:hover {
+  border-color: #e63950;
+  color: #e63950;
+}
+
+.filter-chip.active {
+  background: #e63950;
+  border-color: #e63950;
+  color: white;
+}
+
+.results-count {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* ── Restaurants section ──────────────────────────────── */
+
+.restaurants-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 24px;
+  letter-spacing: -0.01em;
+}
+
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
 
 @media (max-width: 768px) {
-  .search {
-    flex-direction: column;
+  .hero {
+    padding: 104px 16px 0;
   }
 
-  .search input {
-    width: 80%;
+  .hero-headline {
+    font-size: 2.2rem;
   }
 
-  .search button {
-    width: 50%;
+  .filter-bar {
+    padding: 16px 16px 4px;
+  }
+
+  .restaurants-section {
+    padding: 16px 16px 48px;
+  }
+
+  .restaurant-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
   }
 }
 
-.title-container {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0px 0px 15px 20px ;
-}
-
-.title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  font-family: "Poppins", sans-serif;
-  color: #434343;
+@media (max-width: 480px) {
+  .restaurant-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
 }

@@ -4,10 +4,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 40px 20px 40px 80px ;
+  padding: 40px 20px 40px 80px;
   background-color: #fff8f1;
   color: #333;
   font-family: 'Poppins', sans-serif;
+  min-height: calc(100vh - 64px);
 }
 
 .about-detail {

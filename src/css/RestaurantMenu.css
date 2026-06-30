@@ -1,7 +1,7 @@
 /* =======================restaurantMenu================= */
 .restaurant-container {
   max-width: 750px;
-  margin: 0 auto;
+  margin: 24px auto;
   font-family: Arial, sans-serif;
   background: #fff;
   border-radius: 12px;

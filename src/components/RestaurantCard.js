@@ -1,74 +1,93 @@
 import { IMG_CDN_URL } from '../utils/constants'
 import '../css/restaurantCard.css'
-import { useContext } from 'react'
-import UserContext from '../utils/UserContext'
 
-const RestaurantCard = (props) => {
-  const { resData } = props
-  const { loggedInUser } = useContext(UserContext)
+const ratingColor = (rating) => {
+  if (rating >= 4.3) return '#16a34a'  // green
+  if (rating >= 3.8) return '#d97706'  // amber
+  return '#dc2626'                      // red
+}
 
+const RestaurantCard = ({ resData }) => {
   const {
     cloudinaryImageId,
     name,
     avgRating,
-    minDeliveryTime,
     costForTwo,
     cuisines,
     areaName,
     sla,
-    locality,
-    id,
+    aggregatedDiscountInfoV3,
+    veg,
   } = resData.info
+
+  const deliveryTime = sla?.slaString ?? sla?.deliveryTime + ' mins' ?? '—'
 
   return (
     <div className="res-card">
-      <img
-        className="res-img"
-        src={IMG_CDN_URL + cloudinaryImageId}
-        alt="res-logo"
-      />
-      <div className="res-details">
-        <h3 className="res-name">
-          {name.length > 23 ? name.slice(0, 20) + '...' : name.slice(0, 24)}
-        </h3>
-        <div className="res-info">
-          <span className="res-rating">⭐ {avgRating}</span>
-          <span className="res-distance">• {sla.slaString}</span>
-          <span className="res-price">• {costForTwo}</span>
+      {/* Image */}
+      <div className="res-card-img-wrap">
+        <img
+          className="res-card-img"
+          src={IMG_CDN_URL + cloudinaryImageId}
+          alt={name}
+          loading="lazy"
+        />
+        {/* Gradient overlay so text is readable if needed */}
+        <div className="res-card-img-overlay" />
+
+        {/* Discount badge on image */}
+        {aggregatedDiscountInfoV3 && (
+          <div className="res-discount-badge">
+            {aggregatedDiscountInfoV3.header}
+            {aggregatedDiscountInfoV3.subHeader
+              ? ` ${aggregatedDiscountInfoV3.subHeader}`
+              : ''}
+          </div>
+        )}
+
+        {/* Veg indicator */}
+        {veg && (
+          <span className="res-veg-dot" title="Pure Veg">🥦</span>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="res-card-body">
+        <h3 className="res-card-name">{name}</h3>
+
+        <div className="res-card-meta">
+          <span
+            className="res-card-rating"
+            style={{ background: ratingColor(avgRating) }}
+          >
+            ★ {avgRating}
+          </span>
+          <span className="res-card-dot">·</span>
+          <span className="res-card-time">{deliveryTime}</span>
+          <span className="res-card-dot">·</span>
+          <span className="res-card-price">{costForTwo}</span>
         </div>
-        <h4 className="res-cuisine">
-          {cuisines.join(', ').length > 32
-            ? cuisines.join(', ').slice(0, 28) + '...'
-            : cuisines.join(', ').slice(0, 32)}
-        </h4>
-        <h4 className="res-location">{areaName}</h4>
-        {/* <h4 className="res-location">{loggedInUser}</h4> */}
+
+        <p className="res-card-cuisine">
+          {cuisines?.slice(0, 3).join(', ')}
+          {cuisines?.length > 3 ? ` +${cuisines.length - 3}` : ''}
+        </p>
+
+        <p className="res-card-area">📍 {areaName}</p>
       </div>
     </div>
   )
 }
 
-// higher order component is a function that takes a component as input and returns a new component
-// input - RestaurantCard
-// output - RestaurantCard with discount offer if available else normal RestaurantCard
-export const withDiscountOffer = (RestaurantCard) => {
-  // HOC takes a component as input and returns a new component
-  // input - RestaurantCard
+// HOC — wraps the card to inject a top banner for heavy discount offers
+export const withDiscountOffer = (WrappedCard) => {
   return (props) => {
     const { aggregatedDiscountInfoV3 } = props.resData.info
-    // console.log(aggregatedDiscountInfoV3)
+    if (!aggregatedDiscountInfoV3) return <WrappedCard {...props} />
 
     return (
-      <div className="relative inline-block">
-        {/* Discount Label */}
-        {aggregatedDiscountInfoV3 && (
-          <div className="absolute top-4 left-4 bg-orange-500 text-white text-sm !px-3 !py-1.5 rounded-md shadow-md z-10 font-medium">
-            {`${aggregatedDiscountInfoV3.header} ${aggregatedDiscountInfoV3.subHeader}`}
-          </div>
-        )}
-
-        {/* Original Card */}
-        <RestaurantCard {...props} />
+      <div className="res-card-hoc-wrap">
+        <WrappedCard {...props} />
       </div>
     )
   }

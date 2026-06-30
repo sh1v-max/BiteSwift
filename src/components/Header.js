@@ -1,179 +1,109 @@
-import { LOGO_URL } from '../utils/constants'
-import { useEffect, useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import useOnlineStatus from '../utils/useOnlineStatus'
-import UserContext from '../utils/UserContext'
 import { useSelector } from 'react-redux'
-import { FaCartArrowDown } from 'react-icons/fa'
-// import headerImg from '../images/header.jpg'
+import { FiShoppingCart, FiMenu, FiX } from 'react-icons/fi'
 
 const Header = () => {
-  const [btnNameReact, setBtnNameReact] = useState('Login')
-  const [isMenuOpen, setIsMenuOpen] = useState(false) // Toggle state for menu
-  const onlineStatus = useOnlineStatus()
-  const { loggedInUser } = useContext(UserContext)
-  // console.log(loggedInUser)
+  const [scrolled, setScrolled]     = useState(false)
+  const [menuOpen, setMenuOpen]     = useState(false)
+  const [loggedIn, setLoggedIn]     = useState(false)
+  const onlineStatus                = useOnlineStatus()
+  const cartItems                   = useSelector((store) => store.cart.items)
+  const location                    = useLocation()
 
-  // subscribing to the store using a selector
+  const isHome = location.pathname === '/'
 
-  useEffect(() => {}, [btnNameReact])
+  // Transparent over the dark hero, solid white once user scrolls
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-  const cartItems = useSelector((store) =>store.cart.items)
-  // console.log(cartItems)
+  // Close mobile menu on route change
+  useEffect(() => { setMenuOpen(false) }, [location])
+
+  const navLinkClass = ({ isActive }) =>
+    `nav-link ${isActive ? 'nav-link-active' : ''}`
+
+  const transparent = isHome && !scrolled && !menuOpen
 
   return (
-    <div className="header">
-      <div className="logo-container">
-        <Link to="/">
-          <img className="logo" src={LOGO_URL} alt="logo" />
-          {/* <img className="logo"  src= {headerImg} alt="" /> */}
+    <header className={`navbar ${transparent ? 'navbar-transparent' : 'navbar-solid'}`}>
+      <div className="navbar-inner">
+
+        {/* ── Logo ── */}
+        <Link to="/" className="navbar-logo">
+          <span className="logo-icon">🍽️</span>
+          <span className="logo-text">
+            Bite<span className="logo-accent">Swift</span>
+          </span>
         </Link>
-      </div>
 
-      {/* Hamburger Menu Icon */}
-      <button className="menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        ☰
-      </button>
+        {/* ── Desktop nav ── */}
+        <nav className="navbar-nav">
+          <NavLink end to="/"        className={navLinkClass}>Home</NavLink>
+          <NavLink to="/grocery"     className={navLinkClass}>Grocery</NavLink>
+          <NavLink to="/about"       className={navLinkClass}>About</NavLink>
+          <NavLink to="/contact"     className={navLinkClass}>Contact</NavLink>
+        </nav>
 
-      {/* Navigation Items */}
-      <div className={`nav-items ${isMenuOpen ? 'open' : ''}`}>
-        <ul>
-          <li>{onlineStatus ? '🟢' : '🔴'}</li>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/grocery">Grocery</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/contact">Contact Us</Link>
-          </li>
-          <li>
-            <Link to="/cart"><FaCartArrowDown /> ({cartItems.length})</Link>
-          </li>
-          {/* <li>
-            <Link to="/">{loggedInUser}</Link>
-          </li> */}
-          <button
-            className="login-btn"
-            onClick={() =>
-              setBtnNameReact(btnNameReact === 'Login' ? 'Logout' : 'Login')
-            }
-          >
-            {btnNameReact}
-          </button>
-        </ul>
-      </div>
-    </div>
-  )
-
-  // with tailwindcss
-
-  return (
-    <div className="header flex justify-between items-center fixed top-0 left-0 w-full p-3 bg-gray-200 bg-opacity-95 shadow-md z-50">
-      <div className="w-22">
-        <Link to="/">
-          <img
-            className="w-16 h-16 rounded-full border border-gray-300 transition duration-300 hover:border-orange-500"
-            src={LOGO_URL}
-            alt="logo"
+        {/* ── Right side ── */}
+        <div className="navbar-right">
+          {/* Online status */}
+          <span
+            className={`status-dot ${onlineStatus ? 'status-online' : 'status-offline'}`}
+            title={onlineStatus ? 'Online' : 'Offline'}
           />
-        </Link>
-      </div>
-      {/* Hamburger Menu Icon (For Mobile) */}
-      {/* <button className="md:hidden text-2xl cursor-pointer fixed right-4 top-6" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        ☰
-      </button> */}
 
-      {/* Navigation Menu */}
-      <div className={`nav-items ${isMenuOpen ? 'open' : ''}`}>
-        <ul className="flex gap-5 text-lg font-medium">
-          <li>{onlineStatus ? '🟢' : '🔴'}</li>
-          <li className="hover:text-orange-500">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/grocery">Grocery</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/about">About</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/contact">Contact Us</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/">Cart</Link>
-          </li>
+          {/* Cart */}
+          <Link to="/cart" className="cart-btn" aria-label="Cart">
+            <FiShoppingCart size={20} />
+            {cartItems.length > 0 && (
+              <span className="cart-badge">{cartItems.length}</span>
+            )}
+          </Link>
+
+          {/* Login / Logout */}
           <button
-            className="bg-orange-500 text-white font-bold p-1 px-4 py-2 rounded-md transition duration-300 hover:bg-orange-600 active:scale-95"
-            onClick={() =>
-              setBtnNameReact(btnNameReact === 'Login' ? 'Logout' : 'Login')
-            }
+            className={`auth-btn ${loggedIn ? 'auth-btn-outline' : ''}`}
+            onClick={() => setLoggedIn((p) => !p)}
           >
-            {btnNameReact}
+            {loggedIn ? 'Logout' : 'Login'}
           </button>
-        </ul>
-      </div>
-    </div>
-  )
 
-  return (
-    <div className="flex justify-between items-center fixed top-0 left-0 w-full p-3 bg-gray-200 bg-opacity-95 shadow-md z-50">
-      {/* Logo */}
-      <div className="w-22">
-        <Link to="/">
-          <img
-            className="w-16 h-16 rounded-full border border-gray-300 transition duration-300 hover:border-orange-500"
-            src={LOGO_URL}
-            alt="logo"
-          />
-        </Link>
-      </div>
-
-      {/* Hamburger Menu Icon (For Mobile) */}
-      {/* <button className="md:hidden text-2xl cursor-pointer fixed right-4 top-6" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        ☰
-      </button> */}
-
-      {/* Navigation Menu */}
-      <div
-        className={`nav-items ${
-          isMenuOpen ? 'open' : ''
-        } md:flex items-center hidden`}
-      >
-        <ul className="flex gap-5 text-lg font-medium">
-          <li>{onlineStatus ? '🟢' : '🔴'}</li>
-          <li className="hover:text-orange-500">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/grocery">Grocery</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/about">About</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/contact">Contact Us</Link>
-          </li>
-          <li className="hover:text-orange-500">
-            <Link to="/">Cart</Link>
-          </li>
+          {/* Hamburger — mobile only */}
           <button
-            className="bg-orange-500 text-white font-bold px-4 py-2 rounded-md transition duration-300 hover:bg-orange-600 active:scale-95"
-            onClick={() =>
-              setBtnNameReact(btnNameReact === 'Login' ? 'Logout' : 'Login')
-            }
+            className="hamburger"
+            onClick={() => setMenuOpen((p) => !p)}
+            aria-label="Toggle menu"
           >
-            {btnNameReact}
+            {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
           </button>
-        </ul>
+        </div>
       </div>
-    </div>
+
+      {/* ── Mobile drawer ── */}
+      <div className={`mobile-drawer ${menuOpen ? 'drawer-open' : ''}`}>
+        <nav className="drawer-nav">
+          <NavLink end to="/"    className={navLinkClass}>Home</NavLink>
+          <NavLink to="/grocery" className={navLinkClass}>Grocery</NavLink>
+          <NavLink to="/about"   className={navLinkClass}>About</NavLink>
+          <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
+          <NavLink to="/cart"    className={navLinkClass}>
+            Cart {cartItems.length > 0 && `(${cartItems.length})`}
+          </NavLink>
+        </nav>
+        <button
+          className={`auth-btn drawer-auth-btn ${loggedIn ? 'auth-btn-outline' : ''}`}
+          onClick={() => setLoggedIn((p) => !p)}
+        >
+          {loggedIn ? 'Logout' : 'Login'}
+        </button>
+      </div>
+    </header>
   )
 }
 
-// Export the component
 export default Header
