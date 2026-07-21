@@ -349,3 +349,44 @@
 @media (max-width: 480px) {
   .restaurant-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
 }
+
+/* ── Infinite scroll sentinel ─────────────────────────── */
+
+.scroll-sentinel {
+  padding: 32px 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-height: 1px;  /* must have height so observer fires even when content is short */
+}
+
+.fetching-more {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--bs-text-3);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.fetching-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid var(--bs-border);
+  border-top-color: var(--bs-amber);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.end-of-list {
+  font-size: 0.85rem;
+  color: var(--bs-text-3);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 8px 0;
+}
