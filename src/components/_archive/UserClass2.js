@@ -1,5 +1,5 @@
 import React from 'react'
-import '../css/User.css'
+import '../../css/User.css'
 
 //! calling API in class component
 class UserClass2 extends React.Component {

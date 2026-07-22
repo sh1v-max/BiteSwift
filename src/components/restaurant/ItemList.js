@@ -1,8 +1,7 @@
 import { MdStarRate } from 'react-icons/md'
-import { IMG_CDN_URL } from '../utils/constants'
+import { IMG_CDN_URL } from '../../utils/constants'
 import { useDispatch } from 'react-redux'
-// import { addItem } from '../utils/cartSlice'
-import { addItem } from '../utils/cartSlice'
+import { addItem } from '../../utils/cartSlice'
 
 const ItemList = ({ items }) => {
   const dispatch = useDispatch()

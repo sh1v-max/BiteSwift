@@ -1,4 +1,4 @@
-import '../css/Shimmer.css'
+import '../../css/Shimmer.css'
 
 const ShimmerCard = () => (
   <div className="shimmer-card">

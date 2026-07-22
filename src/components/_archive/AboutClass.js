@@ -1,8 +1,8 @@
 import User from './User'
 import UserClass2 from './UserClass2'
 import React from 'react'
-import UserContext from '../utils/UserContext'
-import '../css/User.css'
+import UserContext from '../../utils/UserContext'
+import '../../css/User.css'
 
 class AboutClass extends React.Component {
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import useOnlineStatus from '../utils/useOnlineStatus'
+import useOnlineStatus from '../../utils/useOnlineStatus'
 import { useSelector } from 'react-redux'
 import { FiShoppingCart, FiMenu, FiX } from 'react-icons/fi'
 

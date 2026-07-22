@@ -1,23 +1,21 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
-import Header from './components/Header'
-import Body from './components/Body'
-import Footer from './components/Footer'
-import About from './components/About'
-import Contact from './components/Contact'
-import Error from './components/Error'
+import Header from './components/layout/Header'
+import Body from './components/pages/Body'
+import Footer from './components/layout/Footer'
+import About from './components/pages/About'
+import Contact from './components/pages/Contact'
+import Error from './components/pages/Error'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
-import RestaurantMenu from './components/RestaurantMenu'
+import RestaurantMenu from './components/pages/RestaurantMenu'
 import UserContext from './utils/UserContext'
 import { Provider } from 'react-redux'
-import AboutClass from './components/AboutClass'
+import AboutClass from './components/_archive/AboutClass'
 import appStore from './utils/appStore'
-import Cart from './components/Cart'
-import CollectionPage from './components/CollectionPage'
-// import Grocery from './components/Grocery'
-// now we don't need this
+import Cart from './components/pages/Cart'
+import CollectionPage from './components/pages/CollectionPage'
 
-const Grocery = lazy(() => import('./components/Grocery'))
+const Grocery = lazy(() => import('./components/pages/Grocery'))
 // it's not same import as above, it's dynamic import... a function
 
 const AppLayout = () => {

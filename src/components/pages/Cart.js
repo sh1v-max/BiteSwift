@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import ItemList from './ItemList'
-import { clearCart } from '../utils/cartSlice'
+import ItemList from '../restaurant/ItemList'
+import { clearCart } from '../../utils/cartSlice'
 
 const Cart = () => {
   // subscribing to the store using a selector

@@ -1,11 +1,11 @@
-import Shimmer from './Shimmer'
-import { IMG_CDN_URL } from '../utils/constants'
+import Shimmer from '../shared/Shimmer'
+import { IMG_CDN_URL } from '../../utils/constants'
 import { useParams } from 'react-router'
-import useRestaurantMenu from '../utils/useRestaurantMenu'
+import useRestaurantMenu from '../../utils/useRestaurantMenu'
 import { MdStarRate } from 'react-icons/md'
-import RestaurantCategory from './RestaurantCategory'
+import RestaurantCategory from '../restaurant/RestaurantCategory'
 import { useState } from 'react'
-import '../css/RestaurantMenu.css'
+import '../../css/RestaurantMenu.css'
 
 const RestaurantMenu = () => {
   const { resId } = useParams()

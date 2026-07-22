@@ -1,5 +1,5 @@
-import { IMG_CDN_URL } from '../utils/constants'
-import '../css/restaurantCard.css'
+import { IMG_CDN_URL } from '../../utils/constants'
+import '../../css/restaurantCard.css'
 
 const FALLBACK_IMAGES = [
   'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=660&q=80',

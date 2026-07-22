@@ -1,4 +1,4 @@
-import '../css/User.css'
+import '../../css/User.css'
 import { useState } from 'react'
 
 //? function component is a function that returns a piece of JSX

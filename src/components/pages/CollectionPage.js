@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import RestaurantCard, { withDiscountOffer } from './RestaurantCard'
-import Shimmer from './Shimmer'
-import { CATEGORIES } from '../utils/categories'
-import '../css/CollectionPage.css'
-import '../css/Body.css'
+import RestaurantCard, { withDiscountOffer } from '../restaurant/RestaurantCard'
+import Shimmer from '../shared/Shimmer'
+import { CATEGORIES } from '../../utils/categories'
+import '../../css/CollectionPage.css'
+import '../../css/Body.css'
 
 const COLLECTION_URL = '/.netlify/functions/swiggy-collection'
 

@@ -1,9 +1,9 @@
 // import './About.css';
-import { ABOUT_IMG } from '../utils/constants'
-import User from './User'
-import UserClass from './UserClass'
-import AboutClass from './AboutClass'
-import '../css/About.css'
+import { ABOUT_IMG } from '../../utils/constants'
+import User from '../_archive/User'
+import UserClass from '../_archive/UserClass'
+import AboutClass from '../_archive/AboutClass'
+import '../../css/About.css'
 
 const About = () => {
   return (

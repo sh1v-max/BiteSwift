@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { footer_content } from '../utils/footerData'
-import '../css/Footer.css'
+import { footer_content } from '../../utils/footerData'
+import '../../css/Footer.css'
 
 const SOCIAL_LINKS = [
   { label: 'Instagram', icon: '📸', href: '#' },
