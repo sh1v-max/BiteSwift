@@ -235,18 +235,17 @@ const Body = () => {
   return (
     <div className="home-page">
 
-      {/* ── Hero ──────────────────────────────────────────────── */}
+      {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="hero">
         <div className="hero-content">
-          <p className="hero-eyebrow">🍽️ &nbsp;Food delivery, redefined</p>
+          <span className="hero-badge">🔥 Hot &amp; fresh, always</span>
           <h1 className="hero-headline">
-            Hungry? <br />
+            Hungry?<br />
             <span className="hero-accent">We've got you.</span>
           </h1>
           <p className="hero-sub">
             Order from the best restaurants around you — fast, fresh, and always on time.
           </p>
-
           <div className="hero-search">
             <span className="hero-search-icon">🔍</span>
             <input
@@ -260,15 +259,70 @@ const Body = () => {
               <button className="hero-search-clear" onClick={() => setSearchText('')}>✕</button>
             )}
           </div>
+          <div className="hero-stats">
+            <div className="hstat"><strong>200+</strong><span>Restaurants</span></div>
+            <div className="hstat-sep" />
+            <div className="hstat"><strong>30 min</strong><span>Avg delivery</span></div>
+            <div className="hstat-sep" />
+            <div className="hstat"><strong>4.8 ★</strong><span>Avg rating</span></div>
+          </div>
         </div>
+      </section>
 
-        {/* Category pills */}
+      {/* ── Features ─────────────────────────────────────────── */}
+      <section className="features-section">
+        <div className="section-inner">
+          <p className="eyebrow">Why BiteSwift</p>
+          <h2 className="section-heading">Food delivered, <em>done right.</em></h2>
+          <div className="bento-grid">
+            <div className="bento-card bento-card--tall bento-card--amber">
+              <span className="bento-icon">⚡</span>
+              <h3>Lightning Fast</h3>
+              <p>From kitchen to your door in under 30 minutes. We never keep you waiting.</p>
+            </div>
+            <div className="bento-card">
+              <span className="bento-icon">🍃</span>
+              <h3>Always Fresh</h3>
+              <p>Every order prepared fresh to order — never reheated, never rushed.</p>
+            </div>
+            <div className="bento-card">
+              <span className="bento-icon">🛡️</span>
+              <h3>Zero Compromise</h3>
+              <p>Rigorous quality checks on every partner. Not right? We make it right.</p>
+            </div>
+            <div className="bento-card bento-card--wide">
+              <div className="bento-wide-inner">
+                <div>
+                  <span className="bento-icon">📍</span>
+                  <h3>Live Order Tracking</h3>
+                  <p>Watch your order travel from the restaurant right to your door, in real time.</p>
+                </div>
+                <div className="bento-track-visual">
+                  <span className="track-dot track-dot--done">🏪</span>
+                  <span className="track-line" />
+                  <span className="track-dot track-dot--active">🛵</span>
+                  <span className="track-line" />
+                  <span className="track-dot">🏠</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Categories ───────────────────────────────────────── */}
+      <section className="categories-section">
+        <div className="section-inner">
+          <p className="eyebrow">Explore by craving</p>
+          <h2 className="section-heading">What are you in the mood for?</h2>
+        </div>
         <div className="category-scroll-wrapper">
           <div className="category-scroll">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.slug}
                 className="category-pill"
+                style={{ background: `linear-gradient(145deg, ${cat.color[0]}, ${cat.color[1]})` }}
                 onClick={() => navigate(`/collection/${cat.slug}`)}
               >
                 <span className="cat-emoji">{cat.emoji}</span>
@@ -279,7 +333,7 @@ const Body = () => {
         </div>
       </section>
 
-      {/* ── Filter bar ────────────────────────────────────────── */}
+      {/* ── Filter bar ───────────────────────────────────────── */}
       <div className="filter-bar">
         <div className="filter-chips">
           {FILTERS.map((f) => (
@@ -299,7 +353,7 @@ const Body = () => {
         )}
       </div>
 
-      {/* ── Restaurant grid ───────────────────────────────────── */}
+      {/* ── Restaurant grid ──────────────────────────────────── */}
       <section className="restaurants-section">
         {isLoading ? (
           <Shimmer />
@@ -315,9 +369,7 @@ const Body = () => {
         ) : (
           <>
             <h2 className="section-title">
-              {searchText
-                ? `Results for "${searchText}"`
-                : 'Restaurants near you'}
+              {searchText ? `Results for "${searchText}"` : 'Restaurants near you'}
             </h2>
             <div className="restaurant-grid">
               {filteredRestaurants.map((restaurant) => (
@@ -333,8 +385,6 @@ const Body = () => {
                 </Link>
               ))}
             </div>
-
-            {/* Infinite scroll sentinel */}
             <div ref={sentinelRef} className="scroll-sentinel">
               {isFetchingMore && (
                 <div className="fetching-more">
