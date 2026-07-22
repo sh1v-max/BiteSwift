@@ -2,6 +2,14 @@
   command       = "npm run build; test -f dist/index.html"
   publish       = "dist"
 
+[functions]
+  directory = "netlify/functions"
+
+[dev]
+  command     = "npm run start"
+  targetPort  = 1234
+  port        = 8888
+
 # Send all routes to index.html so React Router handles them client-side.
 # Without this, refreshing /about or /restaurant/:id gives a 404 on Netlify.
 [[redirects]]

@@ -1,6 +1,14 @@
 import { IMG_CDN_URL } from '../utils/constants'
 import '../css/restaurantCard.css'
 
+const FALLBACK_IMAGES = [
+  'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=660&q=80',
+  'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=660&q=80',
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=660&q=80',
+  'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=660&q=80',
+  'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=660&q=80',
+]
+
 const ratingColor = (rating) => {
   if (rating >= 4.3) return '#16a34a'  // green
   if (rating >= 3.8) return '#d97706'  // amber
@@ -31,6 +39,10 @@ const RestaurantCard = ({ resData }) => {
           src={cloudinaryImageId?.startsWith('http') ? cloudinaryImageId : IMG_CDN_URL + cloudinaryImageId}
           alt={name}
           loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null
+            e.target.src = FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)]
+          }}
         />
         {/* Gradient overlay so text is readable if needed */}
         <div className="res-card-img-overlay" />

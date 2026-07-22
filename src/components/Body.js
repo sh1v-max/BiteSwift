@@ -1,14 +1,14 @@
 import RestaurantCard, { withDiscountOffer } from './RestaurantCard'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Shimmer from './Shimmer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useOnlineStatus from '../utils/useOnlineStatus'
 import MOCK_RESTAURANTS from '../mocks/mockRestaurants'
+import { CATEGORIES } from '../utils/categories'
 import '../css/Body.css'
 
-const SWIGGY_LIST_URL =
-  'https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9046136&lng=77.614948&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING'
-const SWIGGY_UPDATE_URL = 'https://www.swiggy.com/dapi/restaurants/list/update'
+const SWIGGY_LIST_URL    = '/.netlify/functions/swiggy-list'
+const SWIGGY_UPDATE_URL  = '/.netlify/functions/swiggy-update'
 const MOCK_PER_PAGE = 20
 
 // Search every card for the restaurant grid — Swiggy's index shifts between responses
@@ -20,19 +20,6 @@ const extractRestaurants = (cards = []) => {
   return []
 }
 
-const CATEGORIES = [
-  { emoji: '🍕', label: 'Pizza' },
-  { emoji: '🍔', label: 'Burgers' },
-  { emoji: '🍗', label: 'Biryani' },
-  { emoji: '🍜', label: 'Chinese' },
-  { emoji: '🌮', label: 'Rolls' },
-  { emoji: '🥗', label: 'Healthy' },
-  { emoji: '🍦', label: 'Desserts' },
-  { emoji: '☕', label: 'Cafe' },
-  { emoji: '🧆', label: 'Kebabs' },
-  { emoji: '🥞', label: 'Breakfast' },
-]
-
 const FILTERS = [
   { id: 'all',    label: 'All' },
   { id: 'rating', label: '⭐  Rating 4.0+' },
@@ -41,14 +28,8 @@ const FILTERS = [
   { id: 'offers', label: '🎁  Offers' },
 ]
 
-const applyFilters = (list, filter, category, search) => {
+const applyFilters = (list, filter, search) => {
   let result = [...list]
-
-  if (category) {
-    result = result.filter((r) =>
-      r.info.cuisines?.some((c) => c.toLowerCase().includes(category.toLowerCase()))
-    )
-  }
 
   if (search.trim()) {
     result = result.filter((r) =>
@@ -72,7 +53,6 @@ const Body = () => {
   const [filteredRestaurants, setFilteredRestaurants] = useState([])
   const [searchText, setSearchText]                   = useState('')
   const [activeFilter, setActiveFilter]               = useState('all')
-  const [activeCategory, setActiveCategory]           = useState(null)
   const [isLoading, setIsLoading]                     = useState(true)
   const [isFetchingMore, setIsFetchingMore]           = useState(false)
   const [hasMore, setHasMore]                         = useState(false)
@@ -83,13 +63,16 @@ const Body = () => {
 
   // Mock pagination
   const [mockPage, setMockPage]     = useState(0)
-  const usingMockRef                = useRef(false)   // ref so loadMore closure always sees latest
+  const usingMockRef                = useRef(false)
+  const swiggySessionRef            = useRef('')      // Swiggy session cookies forwarded on pagination
+  const realImageIdsRef             = useRef([])      // real Swiggy cloudinaryImageIds to reuse in mocks
 
   // Infinite scroll
   const observerRef  = useRef(null)     // holds the IntersectionObserver instance
   const loadMoreRef  = useRef(null)     // always points to the latest loadMore
   const fetchingRef  = useRef(false)    // prevents double-fire from observer
 
+  const navigate = useNavigate()
   const RestaurantCardWithDiscount = withDiscountOffer(RestaurantCard)
   const onlineStatus = useOnlineStatus()
 
@@ -108,6 +91,12 @@ const Body = () => {
       if (restaurants.length > 0) {
         setAllRestaurants(restaurants)
         usingMockRef.current = false
+        swiggySessionRef.current = json?.__cookies || ''
+
+        // Bank real image IDs so mock cards can borrow them
+        realImageIdsRef.current = restaurants
+          .map((r) => r.info.cloudinaryImageId)
+          .filter((id) => id && !id.startsWith('http'))
 
         const pageOffset = json?.data?.pageOffset
         setNextOffset(pageOffset?.nextOffset ?? null)
@@ -125,9 +114,20 @@ const Body = () => {
     }
   }
 
-  const loadMockBatch = (page) => {
-    const batch = MOCK_RESTAURANTS.slice(page * MOCK_PER_PAGE, (page + 1) * MOCK_PER_PAGE)
-    setAllRestaurants((prev) => (page === 0 ? batch : [...prev, ...batch]))
+  // Replace mock cloudinaryImageIds with real Swiggy IDs (cycled) when available
+  const augmentBatch = (batch, offset) => {
+    const ids = realImageIdsRef.current
+    if (!ids.length) return batch
+    return batch.map((r, i) => ({
+      ...r,
+      info: { ...r.info, cloudinaryImageId: ids[(offset + i) % ids.length] },
+    }))
+  }
+
+  const loadMockBatch = (page, append = false) => {
+    const raw = MOCK_RESTAURANTS.slice(page * MOCK_PER_PAGE, (page + 1) * MOCK_PER_PAGE)
+    const batch = augmentBatch(raw, page * MOCK_PER_PAGE)
+    setAllRestaurants((prev) => (page === 0 && !append ? batch : [...prev, ...batch]))
     setMockPage(page + 1)
     setHasMore((page + 1) * MOCK_PER_PAGE < MOCK_RESTAURANTS.length)
     usingMockRef.current = true
@@ -148,7 +148,10 @@ const Body = () => {
         // Hit Swiggy's real pagination API
         const res = await fetch(SWIGGY_UPDATE_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-swiggy-cookies': swiggySessionRef.current,
+          },
           body: JSON.stringify({
             lat: 12.9046136,
             lng: 77.614948,
@@ -170,10 +173,16 @@ const Body = () => {
 
         console.log('[BiteSwift] pagination — got:', more.length, '| nextOffset:', pageOffset?.nextOffset)
 
-        if (more.length > 0) setAllRestaurants((prev) => [...prev, ...more])
-        setNextOffset(pageOffset?.nextOffset ?? null)
-        setWidgetOffset(pageOffset?.widgetOffset ?? {})
-        setHasMore(!!pageOffset?.nextOffset && more.length > 0)
+        if (more.length > 0) {
+          setAllRestaurants((prev) => [...prev, ...more])
+          setNextOffset(pageOffset?.nextOffset ?? null)
+          setWidgetOffset(pageOffset?.widgetOffset ?? {})
+          setHasMore(!!pageOffset?.nextOffset)
+        } else {
+          // Swiggy pagination dry — append mocks seamlessly with real images
+          console.log('[BiteSwift] Swiggy pagination empty — switching to mock append')
+          loadMockBatch(0, true)
+        }
       }
     } catch {
       // Swiggy pagination failed — fall back to mock continuation
@@ -207,12 +216,9 @@ const Body = () => {
   // ── Re-filter whenever search / filter / category / allRestaurants changes ─
   useEffect(() => {
     setFilteredRestaurants(
-      applyFilters(allRestaurants, activeFilter, activeCategory, searchText)
+      applyFilters(allRestaurants, activeFilter, searchText)
     )
-  }, [searchText, activeFilter, activeCategory, allRestaurants])
-
-  const handleCategoryClick = (label) =>
-    setActiveCategory((prev) => (prev === label ? null : label))
+  }, [searchText, activeFilter, allRestaurants])
 
   const handleFilterClick = (id) =>
     setActiveFilter((prev) => (prev === id ? 'all' : id))
@@ -261,9 +267,9 @@ const Body = () => {
           <div className="category-scroll">
             {CATEGORIES.map((cat) => (
               <button
-                key={cat.label}
-                className={`category-pill ${activeCategory === cat.label ? 'active' : ''}`}
-                onClick={() => handleCategoryClick(cat.label)}
+                key={cat.slug}
+                className="category-pill"
+                onClick={() => navigate(`/collection/${cat.slug}`)}
               >
                 <span className="cat-emoji">{cat.emoji}</span>
                 <span className="cat-label">{cat.label}</span>
@@ -302,16 +308,14 @@ const Body = () => {
             <span>🍽️</span>
             <h3>No restaurants found</h3>
             <p>Try a different search or clear your filters.</p>
-            <button onClick={() => { setSearchText(''); setActiveFilter('all'); setActiveCategory(null) }}>
+            <button onClick={() => { setSearchText(''); setActiveFilter('all') }}>
               Clear all filters
             </button>
           </div>
         ) : (
           <>
             <h2 className="section-title">
-              {activeCategory
-                ? `${activeCategory} restaurants`
-                : searchText
+              {searchText
                 ? `Results for "${searchText}"`
                 : 'Restaurants near you'}
             </h2>

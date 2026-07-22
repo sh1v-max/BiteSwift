@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════════════
+   COLLECTION PAGE  (Ember Noir theme)
+═══════════════════════════════════════════════════════ */
+
+.collection-page {
+  min-height: 100vh;
+  background: var(--bs-bg);
+  padding-top: 80px;
+}
+
+/* ── Back bar ─────────────────────────────────────────── */
+
+.collection-back-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px 0;
+}
+
+.collection-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--bs-amber);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 0.15s;
+}
+
+.collection-back-btn:hover { color: var(--bs-amber-dk); }
+
+/* ── Page header ──────────────────────────────────────── */
+
+.collection-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.collection-header-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.collection-header-text h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--bs-text-1);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.collection-header-text p {
+  font-size: 0.875rem;
+  color: var(--bs-text-3);
+  margin: 4px 0 0;
+}
+
+/* ── Restaurants section ──────────────────────────────── */
+
+.collection-restaurants {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 64px;
+}
+
+@media (max-width: 640px) {
+  .collection-page       { padding-top: 64px; }
+  .collection-back-bar,
+  .collection-header,
+  .collection-restaurants { padding-left: 16px; padding-right: 16px; }
+  .collection-header-text h1 { font-size: 1.4rem; }
+}

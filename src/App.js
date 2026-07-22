@@ -13,6 +13,7 @@ import { Provider } from 'react-redux'
 import AboutClass from './components/AboutClass'
 import appStore from './utils/appStore'
 import Cart from './components/Cart'
+import CollectionPage from './components/CollectionPage'
 // import Grocery from './components/Grocery'
 // now we don't need this
 
@@ -68,6 +69,10 @@ const appRouter = createBrowserRouter([
       {
         path: '/cart',
         element: <Cart />,
+      },
+      {
+        path: '/collection/:slug',
+        element: <CollectionPage />,
       },
       {
         path: '/grocery',
