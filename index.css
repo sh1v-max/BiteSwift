@@ -1,37 +1,47 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════
-   DESIGN TOKENS  (Ember Noir theme)
+   DESIGN TOKENS  (Signal Orange theme)
 ═══════════════════════════════════════════════════════ */
 
 :root {
-  /* Backgrounds */
-  --bs-bg:        #FAF7F2;
-  --bs-bg-alt:    #F2EDE5;
+  /* Backgrounds — light minimal */
+  --bs-bg:        #FFFFFF;
+  --bs-bg-alt:    #FAFAFA;
   --bs-card:      #FFFFFF;
-  --bs-border:    #E8E0D4;
+  --bs-card-rgb:  255, 255, 255;
+  --bs-border:    #ECECEC;
 
-  /* Dark surfaces */
-  --bs-dark-1:    #0F0D09;
-  --bs-dark-2:    #1C1810;
-  --bs-dark-3:    #2A2115;
+  /* Dark surfaces (footer, spotlight cards) */
+  --bs-dark-1:      #0A0A0A;
+  --bs-dark-1-rgb:  10, 10, 10;
+  --bs-dark-2:      #161616;
+  --bs-dark-3:      #202020;
 
-  /* Brand — Saffron Amber */
-  --bs-amber:     #E8930A;
-  --bs-amber-dk:  #C97808;
-  --bs-amber-lt:  #FBB95E;
-  --bs-amber-bg:  rgba(232, 147, 10, 0.08);
+  /* Brand — Signal Orange */
+  --bs-amber:         #FF5A1F;
+  --bs-amber-rgb:     255, 90, 31;
+  --bs-amber-dk:      #E2470E;
+  --bs-amber-lt:      #FF8355;
+  --bs-amber-lt-rgb:  255, 131, 85;
+  --bs-amber-bg:      rgba(var(--bs-amber-rgb), 0.08);
 
   /* Semantic */
-  --bs-success:   #16A34A;
-  --bs-warn:      #D97706;
-  --bs-danger:    #DC2626;
+  --bs-success:      #16A34A;
+  --bs-success-rgb:  22, 163, 74;
+  --bs-warn:         #D97706;
+  --bs-danger:       #DC2626;
+  --bs-danger-rgb:   220, 38, 38;
 
   /* Text */
-  --bs-text-1:    #1A1610;
-  --bs-text-2:    #4A3F35;
-  --bs-text-3:    #8A7B70;
-  --bs-text-inv:  #FFFFFF;
+  --bs-text-1:        #111111;
+  --bs-text-2:        #5A5A5A;
+  --bs-text-3:        #9B9B9B;
+  --bs-text-inv:      #FFFFFF;
+  --bs-text-inv-rgb:  255, 255, 255;
+
+  /* Generic elevation shadow — always dark, independent of theme */
+  --bs-shadow-rgb: 0, 0, 0;
 
   /* Layout */
   --bs-nav-h:     64px;
@@ -67,19 +77,15 @@ body {
   left: 0;
   width: 100%;
   z-index: 1000;
-  transition: background 0.25s ease, box-shadow 0.25s ease;
-}
-
-.navbar-transparent {
-  background: transparent;
-  box-shadow: none;
-}
-
-.navbar-solid {
-  background: rgba(250, 247, 242, 0.97);
+  background: rgba(var(--bs-card-rgb), 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 rgba(26, 22, 16, 0.1);
+  border-bottom: 1px solid var(--bs-border);
+  transition: box-shadow 0.25s ease;
+}
+
+.navbar-scrolled {
+  box-shadow: 0 1px 0 rgba(var(--bs-shadow-rgb), 0.06);
 }
 
 /* ── Inner layout ───────────────────────────────────────── */
@@ -117,10 +123,6 @@ body {
 
 .logo-accent { color: var(--bs-amber); }
 
-.navbar-transparent .navbar-logo .logo-text {
-  color: var(--bs-text-inv) !important;
-}
-
 /* ── Desktop nav links ──────────────────────────────────── */
 
 .navbar-nav {
@@ -147,13 +149,12 @@ body {
   background: var(--bs-amber-bg);
 }
 
-/* Active — solid navbar */
-.navbar-solid .nav-link-active {
+.nav-link-active {
   color: var(--bs-amber);
   font-weight: 600;
 }
 
-.navbar-solid .nav-link-active::after {
+.nav-link-active::after {
   content: '';
   position: absolute;
   bottom: -2px;
@@ -161,32 +162,6 @@ body {
   right: 14px;
   height: 2px;
   background: var(--bs-amber);
-  border-radius: var(--bs-radius-pill);
-}
-
-/* Transparent state — white links */
-.navbar-transparent .navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.navbar-transparent .navbar-nav .nav-link:hover {
-  color: var(--bs-text-inv);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.navbar-transparent .navbar-nav .nav-link-active {
-  color: var(--bs-text-inv);
-  font-weight: 600;
-}
-
-.navbar-transparent .navbar-nav .nav-link-active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 14px;
-  right: 14px;
-  height: 2px;
-  background: var(--bs-amber-lt);
   border-radius: var(--bs-radius-pill);
 }
 
@@ -207,8 +182,8 @@ body {
   flex-shrink: 0;
 }
 
-.status-online  { background: var(--bs-success); box-shadow: 0 0 0 2px rgba(22,163,74,0.25); }
-.status-offline { background: var(--bs-danger);  box-shadow: 0 0 0 2px rgba(220,38,38,0.25); }
+.status-online  { background: var(--bs-success); box-shadow: 0 0 0 2px rgba(var(--bs-success-rgb), 0.25); }
+.status-offline { background: var(--bs-danger);  box-shadow: 0 0 0 2px rgba(var(--bs-danger-rgb), 0.25); }
 
 /* Cart */
 .cart-btn {
@@ -227,10 +202,6 @@ body {
   background: var(--bs-amber-bg);
   color: var(--bs-amber);
 }
-
-.navbar-transparent .cart-btn         { color: rgba(255, 255, 255, 0.9); }
-.navbar-transparent .cart-btn:hover   { background: rgba(255,255,255,0.12); color: var(--bs-text-inv); }
-.navbar-transparent .cart-badge       { border-color: transparent; }
 
 .cart-badge {
   position: absolute;
@@ -297,16 +268,13 @@ body {
 
 .hamburger:hover { background: var(--bs-bg-alt); }
 
-.navbar-transparent .hamburger       { color: rgba(255,255,255,0.9); }
-.navbar-transparent .hamburger:hover { background: rgba(255,255,255,0.12); color: var(--bs-text-inv); }
-
 /* ── Mobile drawer ──────────────────────────────────────── */
 
 .mobile-drawer {
   display: none;
   flex-direction: column;
   gap: 4px;
-  background: rgba(250, 247, 242, 0.98);
+  background: rgba(var(--bs-card-rgb), 0.98);
   backdrop-filter: blur(12px);
   padding: 0 16px;
   max-height: 0;

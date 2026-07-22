@@ -3,13 +3,11 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Shimmer from '../shared/Shimmer'
 import { Link, useNavigate } from 'react-router-dom'
 import useOnlineStatus from '../../utils/useOnlineStatus'
-import MOCK_RESTAURANTS from '../../mocks/mockRestaurants'
 import { CATEGORIES } from '../../utils/categories'
 import '../../css/Body.css'
 
 const SWIGGY_LIST_URL    = '/.netlify/functions/swiggy-list'
 const SWIGGY_UPDATE_URL  = '/.netlify/functions/swiggy-update'
-const MOCK_PER_PAGE = 20
 
 // Search every card for the restaurant grid — Swiggy's index shifts between responses
 const extractRestaurants = (cards = []) => {
@@ -60,12 +58,7 @@ const Body = () => {
   // Swiggy pagination tokens
   const [nextOffset, setNextOffset]   = useState(null)
   const [widgetOffset, setWidgetOffset] = useState({})
-
-  // Mock pagination
-  const [mockPage, setMockPage]     = useState(0)
-  const usingMockRef                = useRef(false)
   const swiggySessionRef            = useRef('')      // Swiggy session cookies forwarded on pagination
-  const realImageIdsRef             = useRef([])      // real Swiggy cloudinaryImageIds to reuse in mocks
 
   // Infinite scroll
   const observerRef  = useRef(null)     // holds the IntersectionObserver instance
@@ -88,49 +81,20 @@ const Body = () => {
 
       console.log('[BiteSwift] initial load — restaurants:', restaurants.length, '| pageOffset:', json?.data?.pageOffset)
 
-      if (restaurants.length > 0) {
-        setAllRestaurants(restaurants)
-        usingMockRef.current = false
-        swiggySessionRef.current = json?.__cookies || ''
+      setAllRestaurants(restaurants)
+      swiggySessionRef.current = json?.__cookies || ''
 
-        // Bank real image IDs so mock cards can borrow them
-        realImageIdsRef.current = restaurants
-          .map((r) => r.info.cloudinaryImageId)
-          .filter((id) => id && !id.startsWith('http'))
-
-        const pageOffset = json?.data?.pageOffset
-        setNextOffset(pageOffset?.nextOffset ?? null)
-        setWidgetOffset(pageOffset?.widgetOffset ?? {})
-        setHasMore(!!pageOffset?.nextOffset)
-      } else {
-        console.log('[BiteSwift] Swiggy returned 0 restaurants — falling back to mock')
-        loadMockBatch(0)
-      }
+      const pageOffset = json?.data?.pageOffset
+      setNextOffset(pageOffset?.nextOffset ?? null)
+      setWidgetOffset(pageOffset?.widgetOffset ?? {})
+      setHasMore(!!pageOffset?.nextOffset)
     } catch (e) {
-      console.log('[BiteSwift] Swiggy fetch failed:', e.message, '— falling back to mock')
-      loadMockBatch(0)
+      console.log('[BiteSwift] Swiggy fetch failed:', e.message)
+      setAllRestaurants([])
+      setHasMore(false)
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Replace mock cloudinaryImageIds with real Swiggy IDs (cycled) when available
-  const augmentBatch = (batch, offset) => {
-    const ids = realImageIdsRef.current
-    if (!ids.length) return batch
-    return batch.map((r, i) => ({
-      ...r,
-      info: { ...r.info, cloudinaryImageId: ids[(offset + i) % ids.length] },
-    }))
-  }
-
-  const loadMockBatch = (page, append = false) => {
-    const raw = MOCK_RESTAURANTS.slice(page * MOCK_PER_PAGE, (page + 1) * MOCK_PER_PAGE)
-    const batch = augmentBatch(raw, page * MOCK_PER_PAGE)
-    setAllRestaurants((prev) => (page === 0 && !append ? batch : [...prev, ...batch]))
-    setMockPage(page + 1)
-    setHasMore((page + 1) * MOCK_PER_PAGE < MOCK_RESTAURANTS.length)
-    usingMockRef.current = true
   }
 
   // ── Load more (called by intersection observer) ────────────────────────────
@@ -140,58 +104,40 @@ const Body = () => {
     setIsFetchingMore(true)
 
     try {
-      if (usingMockRef.current) {
-        // Small delay so the spinner is visible and rapid re-fires are impossible
-        await new Promise((r) => setTimeout(r, 600))
-        loadMockBatch(mockPage)
-      } else {
-        // Hit Swiggy's real pagination API
-        const res = await fetch(SWIGGY_UPDATE_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-swiggy-cookies': swiggySessionRef.current,
-          },
-          body: JSON.stringify({
-            lat: 12.9046136,
-            lng: 77.614948,
-            nextOffset,
-            widgetOffset,
-            filters: {},
-            seoParams: {
-              seoUrl: 'https://www.swiggy.com/',
-              pageType: 'DESKTOP_WEB_LISTING',
-              apiName: 'FoodHomePage',
-            },
+      const res = await fetch(SWIGGY_UPDATE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-swiggy-cookies': swiggySessionRef.current,
+        },
+        body: JSON.stringify({
+          lat: 12.9046136,
+          lng: 77.614948,
+          nextOffset,
+          widgetOffset,
+          filters: {},
+          seoParams: {
+            seoUrl: 'https://www.swiggy.com/',
             pageType: 'DESKTOP_WEB_LISTING',
-            type: 'DESKTOP_WEB_LISTING',
-          }),
-        })
-        const json = await res.json()
-        const more = extractRestaurants(json?.data?.cards)
-        const pageOffset = json?.data?.pageOffset
+            apiName: 'FoodHomePage',
+          },
+          pageType: 'DESKTOP_WEB_LISTING',
+          type: 'DESKTOP_WEB_LISTING',
+        }),
+      })
+      const json = await res.json()
+      const more = extractRestaurants(json?.data?.cards)
+      const pageOffset = json?.data?.pageOffset
 
-        console.log('[BiteSwift] pagination — got:', more.length, '| nextOffset:', pageOffset?.nextOffset)
+      console.log('[BiteSwift] pagination — got:', more.length, '| nextOffset:', pageOffset?.nextOffset)
 
-        if (more.length > 0) {
-          setAllRestaurants((prev) => [...prev, ...more])
-          setNextOffset(pageOffset?.nextOffset ?? null)
-          setWidgetOffset(pageOffset?.widgetOffset ?? {})
-          setHasMore(!!pageOffset?.nextOffset)
-        } else {
-          // Swiggy pagination dry — append mocks seamlessly with real images
-          console.log('[BiteSwift] Swiggy pagination empty — switching to mock append')
-          loadMockBatch(0, true)
-        }
-      }
-    } catch {
-      // Swiggy pagination failed — fall back to mock continuation
-      if (!usingMockRef.current) {
-        usingMockRef.current = true
-        loadMockBatch(0)
-      } else {
-        setHasMore(false)
-      }
+      setAllRestaurants((prev) => [...prev, ...more])
+      setNextOffset(pageOffset?.nextOffset ?? null)
+      setWidgetOffset(pageOffset?.widgetOffset ?? {})
+      setHasMore(!!pageOffset?.nextOffset)
+    } catch (e) {
+      console.log('[BiteSwift] pagination failed:', e.message)
+      setHasMore(false)
     } finally {
       fetchingRef.current = false
       setIsFetchingMore(false)
@@ -235,16 +181,16 @@ const Body = () => {
   return (
     <div className="home-page">
 
-      {/* ── Hero ─────────────────────────────────────────────── */}
+      {/* ── Hero — full viewport ──────────────────────────── */}
       <section className="hero">
         <div className="hero-content">
           <span className="hero-badge">🔥 Hot &amp; fresh, always</span>
           <h1 className="hero-headline">
-            Hungry?<br />
-            <span className="hero-accent">We've got you.</span>
+            HUNGRY?<br />
+            <span className="hero-accent">WE'VE GOT YOU.</span>
           </h1>
           <p className="hero-sub">
-            Order from the best restaurants around you — fast, fresh, and always on time.
+            200+ restaurants. One tap. Delivered fast.
           </p>
           <div className="hero-search">
             <span className="hero-search-icon">🔍</span>
@@ -269,48 +215,103 @@ const Body = () => {
         </div>
       </section>
 
-      {/* ── Features ─────────────────────────────────────────── */}
-      <section className="features-section">
-        <div className="section-inner">
-          <p className="eyebrow">Why BiteSwift</p>
-          <h2 className="section-heading">Food delivered, <em>done right.</em></h2>
-          <div className="bento-grid">
-            <div className="bento-card bento-card--tall bento-card--amber">
-              <span className="bento-icon">⚡</span>
-              <h3>Lightning Fast</h3>
-              <p>From kitchen to your door in under 30 minutes. We never keep you waiting.</p>
-            </div>
-            <div className="bento-card">
-              <span className="bento-icon">🍃</span>
-              <h3>Always Fresh</h3>
-              <p>Every order prepared fresh to order — never reheated, never rushed.</p>
-            </div>
-            <div className="bento-card">
-              <span className="bento-icon">🛡️</span>
-              <h3>Zero Compromise</h3>
-              <p>Rigorous quality checks on every partner. Not right? We make it right.</p>
-            </div>
-            <div className="bento-card bento-card--wide">
-              <div className="bento-wide-inner">
-                <div>
-                  <span className="bento-icon">📍</span>
-                  <h3>Live Order Tracking</h3>
-                  <p>Watch your order travel from the restaurant right to your door, in real time.</p>
+      {/* ── How it works strip ───────────────────────────── */}
+      <div className="how-strip">
+        <div className="how-item">
+          <div className="how-icon-wrap">🗺️</div>
+          <div className="how-text">
+            <strong>Browse restaurants</strong>
+            <span>200+ local spots near you</span>
+          </div>
+        </div>
+        <div className="how-divider" />
+        <div className="how-item">
+          <div className="how-icon-wrap">🛒</div>
+          <div className="how-text">
+            <strong>Build your order</strong>
+            <span>Customize every item your way</span>
+          </div>
+        </div>
+        <div className="how-divider" />
+        <div className="how-item">
+          <div className="how-icon-wrap">🛵</div>
+          <div className="how-text">
+            <strong>Track live</strong>
+            <span>Door-to-door, in real time</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Feature row 1 — speed ────────────────────────── */}
+      <section className="feature-row">
+        <div className="feature-row__inner">
+          <div className="feature-row__text">
+            <p className="eyebrow">Fast. Every time.</p>
+            <h2 className="feature-row__heading">Your food,<br />in 30 minutes.</h2>
+            <p className="feature-row__desc">
+              We've optimized every step so your food arrives hot, fast, and exactly as you ordered it.
+            </p>
+          </div>
+          <div className="feature-row__visual">
+            <div className="fvisual-card">
+              <p className="fvc-label">Your order</p>
+              <div className="fvc-steps">
+                <div className="fvc-step fvc-step--done">
+                  <span className="fvcs-dot" />
+                  <span className="fvcs-name">Order received</span>
+                  <span className="fvcs-time">0:00</span>
                 </div>
-                <div className="bento-track-visual">
-                  <span className="track-dot track-dot--done">🏪</span>
-                  <span className="track-line" />
-                  <span className="track-dot track-dot--active">🛵</span>
-                  <span className="track-line" />
-                  <span className="track-dot">🏠</span>
+                <div className="fvc-step fvc-step--done">
+                  <span className="fvcs-dot" />
+                  <span className="fvcs-name">Kitchen preparing</span>
+                  <span className="fvcs-time">5:12</span>
+                </div>
+                <div className="fvc-step fvc-step--active">
+                  <span className="fvcs-dot" />
+                  <span className="fvcs-name">On the way</span>
+                  <span className="fvcs-time">18:30</span>
+                </div>
+                <div className="fvc-step">
+                  <span className="fvcs-dot" />
+                  <span className="fvcs-name">Delivered</span>
+                  <span className="fvcs-time">~28 min</span>
                 </div>
               </div>
+              <div className="fvc-eta">Estimated arrival <strong>28 min</strong> 🛵</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Categories ───────────────────────────────────────── */}
+      {/* ── Feature row 2 — variety, reversed ────────────── */}
+      <section className="feature-row feature-row--alt">
+        <div className="feature-row__inner feature-row__inner--reverse">
+          <div className="feature-row__text">
+            <p className="eyebrow">Every craving covered</p>
+            <h2 className="feature-row__heading">Whatever you're<br />in the mood for.</h2>
+            <p className="feature-row__desc">
+              Late-night biryani. Weekend brunch. Midnight dessert. 20 cuisines across 200+ restaurants — all in one place.
+            </p>
+          </div>
+          <div className="feature-row__visual">
+            <div className="fvisual-cravings">
+              {CATEGORIES.slice(0, 6).map((cat) => (
+                <button
+                  key={cat.slug}
+                  className="fvc-craving"
+                  style={{ background: `linear-gradient(135deg, ${cat.color[0]}, ${cat.color[1]})` }}
+                  onClick={() => navigate(`/collection/${cat.slug}`)}
+                >
+                  <span className="fvc-craving-emoji">{cat.emoji}</span>
+                  <span className="fvc-craving-label">{cat.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Categories ───────────────────────────────────── */}
       <section className="categories-section">
         <div className="section-inner">
           <p className="eyebrow">Explore by craving</p>
@@ -333,7 +334,7 @@ const Body = () => {
         </div>
       </section>
 
-      {/* ── Filter bar ───────────────────────────────────────── */}
+      {/* ── Filter bar ───────────────────────────────────── */}
       <div className="filter-bar">
         <div className="filter-chips">
           {FILTERS.map((f) => (
@@ -353,10 +354,17 @@ const Body = () => {
         )}
       </div>
 
-      {/* ── Restaurant grid ──────────────────────────────────── */}
+      {/* ── Restaurant grid ──────────────────────────────── */}
       <section className="restaurants-section">
         {isLoading ? (
           <Shimmer />
+        ) : allRestaurants.length === 0 ? (
+          <div className="empty-state">
+            <span>📡</span>
+            <h3>Couldn't load restaurants</h3>
+            <p>Something went wrong reaching Swiggy. Please try again.</p>
+            <button onClick={fetchData}>Retry</button>
+          </div>
         ) : filteredRestaurants.length === 0 ? (
           <div className="empty-state">
             <span>🍽️</span>

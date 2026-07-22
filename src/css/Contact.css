@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   CONTACT PAGE  (Ember Noir theme)
+   CONTACT PAGE  (Signal Orange theme)
 ═══════════════════════════════════════════════════════ */
 
 .contact-container {
@@ -9,7 +9,7 @@
   background: var(--bs-card);
   border-radius: var(--bs-radius-xl);
   border: 1px solid var(--bs-border);
-  box-shadow: 0 4px 24px rgba(26, 22, 16, 0.07);
+  box-shadow: 0 4px 24px rgba(var(--bs-shadow-rgb), 0.07);
   text-align: center;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .contact-card:hover {
-  box-shadow: 0 8px 24px rgba(26, 22, 16, 0.1);
+  box-shadow: 0 8px 24px rgba(var(--bs-shadow-rgb), 0.1);
   transform: translateY(-3px);
 }
 
@@ -106,7 +106,7 @@
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: var(--bs-amber);
-  box-shadow: 0 0 0 3px rgba(232, 147, 10, 0.15);
+  box-shadow: 0 0 0 3px rgba(var(--bs-amber-rgb), 0.15);
   background: var(--bs-card);
 }
 

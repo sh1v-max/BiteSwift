@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   SHIMMER SKELETON  (Ember Noir theme)
+   SHIMMER SKELETON  (Signal Orange theme)
 ═══════════════════════════════════════════════════════ */
 
 .shimmer-grid {
@@ -15,7 +15,7 @@
 }
 
 .shimmer-pulse {
-  background: linear-gradient(90deg, #EDE8DF 0%, #FAF7F2 45%, #EDE8DF 80%);
+  background: linear-gradient(90deg, var(--bs-border) 0%, var(--bs-bg-alt) 45%, var(--bs-border) 80%);
   background-size: 800px 100%;
   animation: shimmerPulse 1.5s ease-in-out infinite;
   border-radius: 6px;

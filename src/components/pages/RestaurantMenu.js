@@ -7,10 +7,25 @@ import RestaurantCategory from '../restaurant/RestaurantCategory'
 import { useState } from 'react'
 import '../../css/RestaurantMenu.css'
 
+const ratingColor = (rating) => {
+  if (rating >= 4.3) return 'var(--bs-success)'
+  if (rating >= 3.8) return 'var(--bs-warn)'
+  return 'var(--bs-danger)'
+}
+
 const RestaurantMenu = () => {
   const { resId } = useParams()
-  const resInfo = useRestaurantMenu(resId)
-  const [showIndex, setShowIndex] = useState (0)
+  const { resInfo, error, retry } = useRestaurantMenu(resId)
+  const [showIndex, setShowIndex] = useState(0)
+
+  if (error) return (
+    <div className="empty-state">
+      <span>📡</span>
+      <h3>Couldn't load this menu</h3>
+      <p>Swiggy didn't return data for this restaurant. Please try again.</p>
+      <button onClick={retry}>Retry</button>
+    </div>
+  )
 
   if (resInfo === null) return <Shimmer />
 
@@ -19,75 +34,54 @@ const RestaurantMenu = () => {
     name,
     areaName,
     avgRating,
-    avgRatingString,
     totalRatingsString,
     costForTwoMessage,
     cuisines,
-    locality,
     sla,
   } = resInfo?.cards[2]?.card?.card?.info || {}
 
-  // const { itemCards } =
-  //   resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card
-  //   console.log(itemCards)
-
   const cards =
     resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards || []
-  // console.log(cards)
-
-  let itemCards =
-    cards.find((c) => c?.card?.card?.itemCards)?.card?.card?.itemCards || []
 
   const categories = cards.filter(
     (c) =>
-      // card?. is same as ["card"]?. in the object
-      // we can not write @type directly, so we use ['@type']
       c?.card?.['card']?.['@type'] ===
       'type.googleapis.com/swiggy.presentation.food.v2.ItemCategory'
   )
-  // console.log(categories)
+
+  const rating = avgRating ?? 3.8
 
   return (
     <div className="restaurant-container">
-      {/* <Restaurant Categories /> */}
       <div className="restaurant-header">
         <img
-          className="res-image"
-          src={IMG_CDN_URL + cloudinaryImageId}
+          src={cloudinaryImageId?.startsWith('http') ? cloudinaryImageId : IMG_CDN_URL + cloudinaryImageId}
           alt={name}
         />
 
         <div className="res-header-details">
           <h1>{name}</h1>
           <h3>{areaName}</h3>
-          <p className="cuisines">Cuisines: {cuisines.join(', ')}</p>
+          {cuisines?.length > 0 && (
+            <p className="cuisines">{cuisines.join(', ')}</p>
+          )}
 
           <div className="info">
-            <MdStarRate
-              className="w-[18px] h-[18px] rounded-[50%] p-[2px] mr-[5px] text-[#eceaea]"
-              style={
-                avgRatingString > 4.0
-                  ? { backgroundColor: 'green' }
-                  : { backgroundColor: 'red' }
-              }
-            />
-
-            <span>
-              {avgRatingString || 3.8} ({totalRatingsString || '1K+ ratings'})
-              &nbsp;•
+            <span className="rating">
+              <MdStarRate style={{ color: ratingColor(rating) }} />
+              {rating} ({totalRatingsString || '1K+ ratings'})
             </span>
-            <p className="cost">{costForTwoMessage} &nbsp;•</p>
-            <p className="delivery-time">⏳ {sla.slaString}</p>
+            {costForTwoMessage && <span>· {costForTwoMessage}</span>}
+            {sla?.slaString && <span>· ⏳ {sla.slaString}</span>}
           </div>
         </div>
       </div>
 
-      {/* Creating Category Accordion */}
       {categories.map((category, index) => (
         <RestaurantCategory
           key={category?.card?.card?.title}
           data={category?.card?.card}
-          showItems={index === showIndex ? true : false}
+          showItems={index === showIndex}
           setShowIndex={() => setShowIndex(index === showIndex ? null : index)}
         />
       ))}
@@ -96,14 +90,3 @@ const RestaurantMenu = () => {
 }
 
 export default RestaurantMenu
-
-//& as resInfo was used for fetching and getting data...
-//& we can create a custom hook useRestaurantMenu.js and use it in this component (see commented code)
-//& and later on, we can use out custom hook here and other components as well (if needed)
-// using hook here 👇
-// const resInfo = useRestaurantMenu(resId)
-//? why creating custom hook is better?
-// because it makes our code more clean and readable
-// we can reuse it in other components as well
-// in case, there is some issue with let's say fetching data, or any custom hook...
-// we just need to check that file, it wont affect other components

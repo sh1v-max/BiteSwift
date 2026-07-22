@@ -10,9 +10,9 @@ const FALLBACK_IMAGES = [
 ]
 
 const ratingColor = (rating) => {
-  if (rating >= 4.3) return '#16a34a'  // green
-  if (rating >= 3.8) return '#d97706'  // amber
-  return '#dc2626'                      // red
+  if (rating >= 4.3) return 'var(--bs-success)'
+  if (rating >= 3.8) return 'var(--bs-warn)'
+  return 'var(--bs-danger)'
 }
 
 const RestaurantCard = ({ resData }) => {

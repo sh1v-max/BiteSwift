@@ -12,9 +12,7 @@ const Header = () => {
   const cartItems                   = useSelector((store) => store.cart.items)
   const location                    = useLocation()
 
-  const isHome = location.pathname === '/'
-
-  // Transparent over the dark hero, solid white once user scrolls
+  // Adds a hairline shadow once the page scrolls past the top
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -27,10 +25,8 @@ const Header = () => {
   const navLinkClass = ({ isActive }) =>
     `nav-link ${isActive ? 'nav-link-active' : ''}`
 
-  const transparent = isHome && !scrolled && !menuOpen
-
   return (
-    <header className={`navbar ${transparent ? 'navbar-transparent' : 'navbar-solid'}`}>
+    <header className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-inner">
 
         {/* ── Logo ── */}
