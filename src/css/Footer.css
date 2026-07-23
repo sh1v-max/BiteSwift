@@ -53,15 +53,16 @@
   border-radius: 50%;
   background: rgba(var(--bs-text-inv-rgb), 0.06);
   border: 1px solid rgba(var(--bs-text-inv-rgb), 0.1);
-  font-size: 1rem;
+  color: rgba(var(--bs-text-inv-rgb), 0.7);
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
 }
 
 .footer-social-icon:hover {
   background: rgba(var(--bs-amber-rgb), 0.18);
   border-color: var(--bs-amber);
+  color: var(--bs-amber);
   transform: translateY(-2px);
 }
 

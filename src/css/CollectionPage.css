@@ -5,7 +5,6 @@
 .collection-page {
   min-height: 100vh;
   background: var(--bs-bg);
-  padding-top: 80px;
 }
 
 /* ── Back bar ─────────────────────────────────────────── */
@@ -71,7 +70,6 @@
 }
 
 @media (max-width: 640px) {
-  .collection-page       { padding-top: 64px; }
   .collection-back-bar,
   .collection-header,
   .collection-restaurants { padding-left: 16px; padding-right: 16px; }

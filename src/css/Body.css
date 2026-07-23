@@ -646,6 +646,9 @@
   text-decoration: none;
   color: inherit;
   display: block;
+  min-width: 0; /* grid items default to min-width:auto — without this, the
+                   nowrap cuisine/name text inside forces the column (and the
+                   whole page) wider than the viewport on narrow screens */
 }
 
 /* ── Infinite scroll sentinel ─────────────────────────── */
@@ -734,4 +737,17 @@
   .hstat-sep { height: 24px; }
   .feature-row__inner { padding: 56px 16px; gap: 36px; }
   .fvisual-cravings { gap: 8px; }
+
+  /* clamp()'s vw-based preferred value collapses to its floor below ~420px,
+     which is still too large for the headline to wrap gracefully */
+  .hero-headline { font-size: 2.5rem; line-height: 1.05; }
+  .hero-badge { margin-bottom: 20px; }
+  .hero-sub { font-size: 0.95rem; margin-bottom: 28px; }
+
+  .how-strip { padding: 4px 0; }
+  .how-item { padding: 16px 20px; gap: 12px; }
+  .how-icon-wrap { width: 40px; height: 40px; font-size: 1.25rem; }
+
+  .fvisual-card { padding: 20px; }
+  .fvc-craving-emoji { font-size: 1.6rem; }
 }

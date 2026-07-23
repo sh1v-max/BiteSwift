@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom'
+import { Icon } from '@iconify/react'
 import { footer_content } from '../../utils/footerData'
 import '../../css/Footer.css'
 
 const SOCIAL_LINKS = [
-  { label: 'Instagram', icon: '📸', href: '#' },
-  { label: 'Twitter / X', icon: '🐦', href: '#' },
-  { label: 'LinkedIn', icon: '💼', href: '#' },
-  { label: 'Facebook', icon: '👥', href: '#' },
+  { label: 'Portfolio', icon: 'lucide:globe', href: 'https://singhshiv.netlify.app/' },
+  { label: 'GitHub', icon: 'lucide:github', href: 'https://github.com/sh1v-max' },
+  { label: 'LinkedIn', icon: 'lucide:linkedin', href: 'https://www.linkedin.com/in/shiv-shankar-singh-/' },
+  { label: 'X', icon: 'simple-icons:x', href: 'https://x.com/1amWaziR' },
+  { label: 'Email', icon: 'lucide:mail', href: 'mailto:singhshiv0427@gmail.com' },
 ]
 
 // Which footer column labels should link to a real route
@@ -36,8 +38,9 @@ const Footer = () => (
               className="footer-social-icon"
               aria-label={label}
               title={label}
+              {...(!href.startsWith('mailto:') && { target: '_blank', rel: 'noopener noreferrer' })}
             >
-              {icon}
+              <Icon icon={icon} width={18} height={18} />
             </a>
           ))}
         </div>

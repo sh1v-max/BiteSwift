@@ -87,6 +87,7 @@ body {
   background-color: var(--bs-bg);
   color: var(--bs-text-1);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ═══════════════════════════════════════════════════════

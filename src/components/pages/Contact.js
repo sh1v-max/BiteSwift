@@ -1,5 +1,14 @@
 import { useState } from 'react'
+import { Icon } from '@iconify/react'
 import '../../css/Contact.css'
+
+const DEV_LINKS = [
+  { label: 'Email', icon: 'lucide:mail', href: 'mailto:singhshiv0427@gmail.com' },
+  { label: 'GitHub', icon: 'lucide:github', href: 'https://github.com/sh1v-max' },
+  { label: 'LinkedIn', icon: 'lucide:linkedin', href: 'https://www.linkedin.com/in/shiv-shankar-singh-/' },
+  { label: 'X', icon: 'simple-icons:x', href: 'https://x.com/1amWaziR' },
+  { label: 'Portfolio', icon: 'lucide:globe', href: 'https://singhshiv.netlify.app/' },
+]
 
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -23,6 +32,24 @@ const Contact = () => {
         We'd love to hear from you — questions, feedback, or just a hello. Reach out any time.
       </p>
 
+      <div className="dev-contact">
+        <p className="dev-contact-label">This project was built by Shiv Shankar Singh — connect directly:</p>
+        <div className="dev-contact-links">
+          {DEV_LINKS.map(({ label, icon, href }) => (
+            <a
+              key={label}
+              href={href}
+              className="dev-contact-link"
+              aria-label={label}
+              title={label}
+              {...(!href.startsWith('mailto:') && { target: '_blank', rel: 'noopener noreferrer' })}
+            >
+              <Icon icon={icon} width={18} height={18} />
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="contact-info">
         <div className="contact-card">
           <span className="contact-icon">📍</span>
@@ -32,7 +59,7 @@ const Contact = () => {
         <div className="contact-card">
           <span className="contact-icon">📞</span>
           <h2>Phone</h2>
-          <p>+91 80-4600-0000<br />Mon – Sat, 9 AM – 9 PM</p>
+          <p>+91 70689 00427<br />Mon – Sat, 9 AM – 9 PM</p>
         </div>
         <div className="contact-card">
           <span className="contact-icon">📧</span>

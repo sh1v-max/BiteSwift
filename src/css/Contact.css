@@ -28,6 +28,50 @@
   line-height: 1.65;
 }
 
+/* ── Developer contact ──────────────────────────────────── */
+
+.dev-contact {
+  margin: 0 0 40px;
+  padding: 20px 24px;
+  background: var(--bs-bg-alt);
+  border: 1px solid var(--bs-border);
+  border-radius: var(--bs-radius-lg);
+}
+
+.dev-contact-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--bs-text-2);
+  margin: 0 0 14px;
+}
+
+.dev-contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dev-contact-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bs-card);
+  border: 1px solid var(--bs-border);
+  color: var(--bs-text-2);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+.dev-contact-link:hover {
+  background: var(--bs-amber-bg);
+  border-color: var(--bs-amber);
+  color: var(--bs-amber);
+  transform: translateY(-2px);
+}
+
 /* ── Info cards ─────────────────────────────────────────── */
 
 .contact-info {
