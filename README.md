@@ -1,154 +1,118 @@
-
 <div align="center">
 
-  <!-- You can create a simple logo like this to make your project stand out -->
-  <!-- <br/>
-  <img src="https://raw.githubusercontent.com/sh1v-max/BiteSwift/main/public/biteswift-logo.png" alt="BiteSwift Logo" width="150">
-  <br/> -->
-
   <h1>BiteSwift 🍽️</h1>
-  
-  <p>A high-fidelity, responsive Swiggy clone built with a modern React stack. BiteSwift delivers a seamless user experience for browsing restaurants, creating orders, and managing a shopping cart, all powered by a robust and scalable frontend architecture.</p>
 
-  <!-- Badges -->
+  <p>A high-fidelity, responsive Swiggy clone built with React. BiteSwift delivers real restaurant data, a working cart with quantity tracking and checkout, and a clean, mobile-responsive UI — with graceful fallbacks for the parts of Swiggy's API that actively resist being scraped.</p>
+
   <p>
-    <img src="https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react" alt="React">
-    <img src="https://img.shields.io/badge/Redux_Toolkit-2.0.0-764ABC?logo=redux" alt="Redux Toolkit">
-    <img src="https://img.shields.io/badge/Tailwind_CSS-3.4.0-38B2AC?logo=tailwind-css" alt="Tailwind CSS">
-    <img src="https://img.shields.io/badge/React_Router-6.20.0-CA4245?logo=react-router" alt="React Router">
-    <img src="https://img.shields.io/badge/Vite-5.0.0-646CFF?logo=vite" alt="Vite">
-    <img src="https://img.shields.io/github/license/sh1v-max/BiteSwift" alt="License">
-    <img src="https://img.shields.io/github/stars/sh1v-max/BiteSwift?style=social" alt="GitHub Stars">
+    <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react" alt="React">
+    <img src="https://img.shields.io/badge/Redux_Toolkit-2.6-764ABC?logo=redux" alt="Redux Toolkit">
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css" alt="Tailwind CSS">
+    <img src="https://img.shields.io/badge/React_Router-6-CA4245?logo=react-router" alt="React Router">
+    <img src="https://img.shields.io/badge/Parcel-2-E7A93F?logo=parcel" alt="Parcel">
+    <img src="https://img.shields.io/badge/Deployed_on-Netlify-00C7B7?logo=netlify" alt="Netlify">
   </p>
 
 </div>
 
-
-**BiteSwift** is a front-end showcase project demonstrating best practices in modern web development. It meticulously recreates the core functionality of a food delivery application, focusing on state management, component architecture, and performance.
-
-## ✨ Key Features
-
-- **Dynamic Restaurant Listings:** Fetches and displays a grid of restaurants from a live API, with client-side filtering for instant search results.
-- **Interactive Restaurant Menus:** Dynamic routing to individual restaurant pages, presenting detailed menus fetched on-demand.
-- **Robust Cart Functionality:** A fully-featured shopping cart managed by Redux Toolkit, allowing users to add items, view their order, and clear the cart. All state changes are instantly reflected across the UI.
-- **Responsive First Design:** A mobile-first, fully responsive UI crafted with Tailwind CSS ensures a seamless experience on any device, from a smartphone to a widescreen monitor.
-- **Shimmer UI for Loading States:** Implements a sophisticated "Shimmer UI" effect while data is being fetched, providing a better user experience than traditional spinners.
-- **Custom Hooks for Clean Code:** Business logic is abstracted into custom hooks (e.g., `useRestaurantMenu`, `useOnlineStatus`), keeping UI components lean, declarative, and easy to read.
-
+**BiteSwift** is a front-end showcase project recreating the core experience of a food delivery app — restaurant discovery, dynamic menus, and a fully working cart — with an emphasis on clean state management, honest handling of unreliable third-party data, and a self-built design system.
 
 ## 🚀 Live Demo
 
-A live version of the application is deployed and available for you to experience:
+**[biteswift.netlify.app](https://yourbiteswift.netlify.app/)**
 
-**[https://biteswift.vercel.app/](https://yourbiteswift.netlify.app/)**  <!-- Replace with your actual deployment URL -->
+## ✨ Key Features
 
-<!-- A GIF is highly recommended to immediately show off your project's functionality -->
-<div align="center">
-  <img src="https://raw.githubusercontent.com/sh1v-max/BiteSwift/main/public/biteswift-demo.gif" alt="BiteSwift Application Demo" width="800"/>
-</div>
-
+- **Real restaurant data** — home page, category/collection pages, and search all pull live from Swiggy's public listing API through a Netlify Functions proxy (needed because that endpoint doesn't send CORS headers for browser access).
+- **Resilient menu pages** — individual restaurant menus attempt the real Swiggy menu API first; when it's blocked by bot detection (which happens reliably outside a real browser session — more on that below), the page falls back to a realistic mock menu instead of showing an error. Dish search, veg/non-veg filtering, and bestseller badges all read the same real Swiggy response fields (`itemAttribute.vegClassifier`, `ribbon.text`), so they work identically regardless of data source.
+- **A cart that actually works** — quantity tracking per item (not duplicate entries), remove-by-id (not "remove whatever's last in the array"), a real bill breakdown (GST, delivery fee, platform fee, coupon codes), a payment method selector, and a simulated checkout flow that ends in an order confirmation receipt.
+- **Self-built design system** — every color in the app resolves through a small set of CSS custom properties (`--bs-*` tokens) rather than hardcoded hex values, so the whole theme can be re-skinned (including a future dark mode) by editing one place.
+- **Fully responsive** — audited and fixed page by page, including a classic CSS Grid `min-width: auto` overflow bug that only showed up on narrow viewports.
+- **Honest empty states** — the Grocery section is a genuine "coming soon" page rather than a stub pretending to be a feature; API failures show a clean retry state instead of a blank screen or an infinite spinner.
 
 ## 🛠️ Technology Stack
 
-This project leverages a curated stack of modern, industry-leading technologies to build a high-performance and maintainable application.
-
-| Category             | Technology                                                                                                    | Rationale                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| **UI Library**       | [React.js](https://reactjs.org/)                                                                              | Component-based architecture for building a reusable and scalable UI.            |
-| **Build Tool**       | [Vite](https://vitejs.dev/)                                                                                   | Next-generation frontend tooling for an insanely fast development experience.    |
-| **Styling**          | [Tailwind CSS](https://tailwindcss.com/)                                                                      | A utility-first framework for rapid, responsive, and consistent UI development.  |
-| **State Management** | [Redux Toolkit](https://redux-toolkit.js.org/)                                                                | For managing complex, global state like the shopping cart in a predictable way.  |
-| **Routing**          | [React Router](https://reactrouter.com/)                                                                      | Standard library for handling client-side routing and dynamic page navigation.   |
-| **API Calls**        | [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)                                       | Native browser API for making network requests to fetch restaurant data.         |
-| **Deployment**       | [Vercel](https://vercel.com/)                                                                                 | For seamless, fast, and reliable deployment of the frontend application.         |
-
+| Category | Technology | Notes |
+| --- | --- | --- |
+| **UI Library** | [React 19](https://react.dev/) | Functional components, hooks throughout. |
+| **Build Tool** | [Parcel 2](https://parceljs.org/) | Zero-config bundler with fast HMR. |
+| **State Management** | [Redux Toolkit](https://redux-toolkit.js.org/) | Cart state (items, quantities) — the one piece of state genuinely shared across disconnected components. |
+| **Routing** | [React Router 6](https://reactrouter.com/) | Client-side routing, lazy-loaded routes. |
+| **Styling** | Hand-rolled CSS with custom properties | Tailwind is present for base resets, but page styling is a self-built token system (colors, radii, spacing) — not utility classes. |
+| **Icons** | [lucide-react](https://lucide.dev/) + [Iconify](https://iconify.design/) | Lucide for UI icons; Iconify (`lucide:*` / `simple-icons:*`) specifically for brand/social logos, which generic icon sets deliberately don't include. |
+| **Serverless Backend** | [Netlify Functions](https://www.netlify.com/platform/core/functions/) | Proxies Swiggy's list/collection APIs server-side to work around missing CORS headers. |
+| **Deployment** | [Netlify](https://www.netlify.com/) | CI/CD from `main`, functions and static build deployed together. |
 
 ## 🏁 Getting Started
 
-To set up and run this project on your local machine, follow these steps.
-
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (version 18.x or newer)
-- [npm](https://www.npmjs.com/) (or another package manager like yarn/pnpm)
+- [Node.js](https://nodejs.org/) 18.x or newer
+- npm
 
 ### Local Development Setup
 
-1.  **Clone the Repository:**
+1.  **Clone the repository:**
     ```
     git clone https://github.com/sh1v-max/BiteSwift.git
     cd BiteSwift
     ```
 
-2.  **Install Dependencies:**
+2.  **Install dependencies:**
     ```
     npm install
     ```
-    This will install all the necessary packages defined in `package.json`.
 
-3.  **Start the Development Server:**
+3.  **Start the dev server:**
     ```
     npm run dev
     ```
-    The application will start in development mode, accessible at `http://localhost:5173`. The server features Hot Module Replacement (HMR) for instant feedback on your changes.
+    This runs `netlify dev`, which serves the Parcel dev server *and* the Netlify Functions together, at `http://localhost:8888`. Running plain `parcel index.html` (via `npm start`) will serve the frontend alone at `http://localhost:1234`, but the Netlify Functions (and therefore real restaurant data) won't be available that way — use `npm run dev` for the full experience.
 
-4.  **Build for Production:**
-    To create an optimized production build, run:
+4.  **Build for production:**
     ```
     npm run build
     ```
-    This command bundles the application into static files in the `/dist` directory, ready for deployment.
+    Bundles the app into `/dist`.
 
+## 🏗️ Architectural Notes
 
-## 🏗️ Architectural Insights
+A few decisions worth explaining, since they weren't the obvious first choice:
 
-This project's architecture was designed with maintainability, scalability, and performance as top priorities.
+**Why a serverless proxy for some endpoints but not others.** Swiggy's restaurant-listing API sends no `Access-Control-Allow-Origin` header, so a browser blocks it outright — that one *needs* the Netlify Function proxy. The menu API, by contrast, actually sends permissive CORS headers; fetching it directly from the browser was the right call. The real reason menus are unreliable is Swiggy's bot detection (their AWS WAF layer), which behaves worse from a server than from a real browser — routing it through a proxy would make things worse, not better.
 
-1.  **Separation of Concerns via Custom Hooks:**
-    A core principle of this project is to keep UI components as "dumb" as possible. All complex logic, especially side effects like API calls, is extracted into custom hooks.
-    -   **`useRestaurantMenu(resId)`:** This hook encapsulates the entire logic for fetching a specific restaurant's menu. It takes a `resId`, manages the API call, handles loading/error states, and returns the formatted data. The `RestaurantMenu` component is thus freed from this complexity and can focus solely on rendering the UI.
-    - **`useOnlineStatus()`**: This utility hook listens to browser online/offline events, providing a boolean value that can be used application-wide to inform the user of their connectivity status.
+**Why menus fall back to mock data but restaurant listings don't.** This was a deliberate, tested decision, not a shortcut. The listing API works reliably. The menu API doesn't — confirmed by testing with real captured session cookies from an authenticated browser session, which *still* got blocked, and cross-referenced against public reports of the same issue from other developers building the same style of project. Given that, showing a permanent error for every single restaurant's menu would make the app unusable; a realistic mock fallback (matching Swiggy's real response shape exactly, so no component needs to know the difference) keeps the core "browse → add to cart → checkout" flow demonstrable.
 
-2.  **Strategic State Management:**
-    The application makes a clear distinction between local and global state.
-    -   **Global State (Redux Toolkit):** The shopping cart is managed globally because its state needs to be accessed and modified by multiple, disconnected components (`Header`, `RestaurantMenu`, `CartPage`). Redux Toolkit provides a robust, predictable, and debuggable solution for this cross-cutting concern.
-    -   **Local State (`useState`):** UI-specific state that is not needed elsewhere, such as the `searchText` in the main body, is managed locally within its component. This avoids cluttering the global store and keeps state management efficient.
+**Why cart state is Redux but everything else is local `useState`.** The cart needs to be read and modified by the header (badge count), the menu page (add/adjust), and the cart page itself — genuinely cross-cutting state. Search text, form inputs, and filter toggles are only ever needed by the component that owns them, so they stay local. Reaching for global state by default is a common overcorrection; this project only uses it where it earns its keep.
 
-3.  **Performance Optimization:**
-    -   **Client-Side Filtering:** The search/filter functionality operates on a master list of restaurants stored in state, providing an instantaneous user experience without requiring extra API calls.
-    -   **Shimmer UI:** Instead of showing a jarring loading spinner, the application displays a content placeholder (Shimmer UI) that mimics the layout of the page. This improves the perceived performance and makes the application feel faster.
-    -   **Lazy Loading:** React Router is configured to lazy load components for different routes. This means the code for a specific page (like the Cart page) is only downloaded when the user navigates to it, reducing the initial bundle size and improving initial load time.
+## 🛣️ Roadmap
 
-
-## 🛣️ Future Roadmap
-
-BiteSwift is a living project with a clear path for future enhancements:
-
--   [ ] **Implement a Backend:** Create a Node.js/Express backend to serve the restaurant data, moving away from a hardcoded or external API proxy.
--   [ ] **Persist Cart Data:** Integrate with a database like **Firebase Firestore** or **PostgreSQL** to save a user's cart, so it persists between sessions.
--   [ ] **User Authentication:** Add a full authentication system (e.g., using Firebase Auth) to support user accounts, saved addresses, and order history.
--   [ ] **Checkout and Payments:** Integrate with a payment gateway like **Stripe** to simulate a complete checkout flow.
--   [ ] **End-to-End Testing:** Write a suite of integration and end-to-end tests using a framework like **Cypress** or **Playwright** to ensure key user flows (like adding to cart and checking out) are always working correctly.
-
+- [ ] **Browser geolocation** — replace the hardcoded Bangalore coordinates with the user's real location.
+- [ ] **Real backend + persisted cart** — a lightweight backend so cart contents survive a refresh.
+- [ ] **User authentication** — the current Login/Logout button is a visual placeholder only.
+- [ ] **Real payment integration** — checkout is currently a convincing simulation (loading state → order receipt), not a real payment flow.
+- [ ] **Expand automated test coverage** — a handful of tests currently need updating after a component reorganization.
 
 ## 🤝 Contributing
 
-Contributions are what make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are welcome. Fork the repo, make your changes, and open a pull request — for anything substantial, please open an issue first to discuss the approach.
 
-Please feel free to fork the repository, make changes, and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
-
-1.  **Fork the Project**
-2.  **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
-3.  **Commit your Changes** (`git commit -m 'feat: Add some AmazingFeature'`)
-4.  **Push to the Branch** (`git push origin feature/AmazingFeature`)
-5.  **Open a Pull Request**
-
+1.  Fork the project
+2.  Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your changes (`git commit -m 'feat: add some amazing feature'`)
+4.  Push to the branch (`git push origin feature/AmazingFeature`)
+5.  Open a pull request
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
+Distributed under the ISC License. See `LICENSE` for details.
 
 <div align="center">
-  <p>Crafted with ❤️ by Shiv Shankar Singh.</p>
+  <p>Crafted with ❤️ by Shiv Shankar Singh</p>
+  <p>
+    <a href="https://singhshiv.netlify.app/">Portfolio</a> ·
+    <a href="https://github.com/sh1v-max">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/shiv-shankar-singh-/">LinkedIn</a> ·
+    <a href="https://x.com/1amWaziR">X</a>
+  </p>
 </div>
