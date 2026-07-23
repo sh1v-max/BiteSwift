@@ -1,4 +1,4 @@
-import { MdStarRate } from 'react-icons/md'
+import { Star } from 'lucide-react'
 import { IMG_CDN_URL } from '../../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { addItem, incrementQuantity, decrementQuantity } from '../../utils/cartSlice'
@@ -39,7 +39,7 @@ const ItemList = ({ items }) => {
               {description && <p>{description.slice(0, 140)}</p>}
               {rating && (
                 <div className="rating">
-                  <MdStarRate style={{ color: ratingColor(rating) }} />
+                  <Star size={13} fill="currentColor" style={{ color: ratingColor(rating) }} />
                   <span>{rating}{ratingCount ? ` (${ratingCount})` : ''}</span>
                 </div>
               )}

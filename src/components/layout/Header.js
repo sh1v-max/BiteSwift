@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import useOnlineStatus from '../../utils/useOnlineStatus'
 import { useSelector } from 'react-redux'
-import { FiShoppingCart, FiMenu, FiX } from 'react-icons/fi'
+import { ShoppingCart, Menu, X } from 'lucide-react'
 
 const Header = () => {
   const [scrolled, setScrolled]     = useState(false)
   const [menuOpen, setMenuOpen]     = useState(false)
   const [loggedIn, setLoggedIn]     = useState(false)
-  const onlineStatus                = useOnlineStatus()
   const cartItems                   = useSelector((store) => store.cart.items)
   const cartCount                   = cartItems.reduce((sum, item) => sum + item.quantity, 0)
   const location                    = useLocation()
@@ -48,15 +46,9 @@ const Header = () => {
 
         {/* ── Right side ── */}
         <div className="navbar-right">
-          {/* Online status */}
-          <span
-            className={`status-dot ${onlineStatus ? 'status-online' : 'status-offline'}`}
-            title={onlineStatus ? 'Online' : 'Offline'}
-          />
-
           {/* Cart */}
           <Link to="/cart" className="cart-btn" aria-label="Cart">
-            <FiShoppingCart size={20} />
+            <ShoppingCart size={20} />
             {cartCount > 0 && (
               <span className="cart-badge">{cartCount}</span>
             )}
@@ -76,7 +68,7 @@ const Header = () => {
             onClick={() => setMenuOpen((p) => !p)}
             aria-label="Toggle menu"
           >
-            {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>

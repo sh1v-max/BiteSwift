@@ -1,6 +1,5 @@
 import ItemList from './ItemList'
-import { MdKeyboardArrowUp } from 'react-icons/md'
-import { RiArrowDownSLine } from 'react-icons/ri'
+import { ChevronUp, ChevronDown } from 'lucide-react'
 
 const RestaurantCategory = ({ data, showItems, setShowIndex, forceOpen = false }) => {
   const isOpen = forceOpen || showItems
@@ -17,7 +16,7 @@ const RestaurantCategory = ({ data, showItems, setShowIndex, forceOpen = false }
         </span>
         {!forceOpen && (
           <span className="menu-category-arrow">
-            {isOpen ? <MdKeyboardArrowUp /> : <RiArrowDownSLine />}
+            {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </span>
         )}
       </div>

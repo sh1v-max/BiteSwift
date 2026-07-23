@@ -2,8 +2,7 @@ import Shimmer from '../shared/Shimmer'
 import { IMG_CDN_URL } from '../../utils/constants'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import useRestaurantMenu from '../../utils/useRestaurantMenu'
-import { MdStarRate } from 'react-icons/md'
-import { FiArrowLeft, FiSearch, FiX } from 'react-icons/fi'
+import { Star, ArrowLeft, Search, X } from 'lucide-react'
 import RestaurantCategory from '../restaurant/RestaurantCategory'
 import { useState } from 'react'
 import '../../css/RestaurantMenu.css'
@@ -93,7 +92,7 @@ const RestaurantMenu = () => {
           onClick={() => navigate(-1)}
           aria-label="Go back"
         >
-          <FiArrowLeft size={18} />
+          <ArrowLeft size={18} />
         </button>
 
         <div className="menu-hero-content">
@@ -102,7 +101,7 @@ const RestaurantMenu = () => {
 
           <div className="menu-hero-info">
             <span className="rating">
-              <MdStarRate style={{ color: ratingColor(rating) }} />
+              <Star size={14} fill="currentColor" style={{ color: ratingColor(rating) }} />
               {rating} ({totalRatingsString || '1K+ ratings'})
             </span>
             {costForTwoMessage && <span>· {costForTwoMessage}</span>}
@@ -118,7 +117,7 @@ const RestaurantMenu = () => {
       <div className="restaurant-container">
         <div className="menu-toolbar">
           <div className="menu-search">
-            <FiSearch size={16} />
+            <Search size={16} />
             <input
               type="text"
               placeholder="Search for dishes"
@@ -127,7 +126,7 @@ const RestaurantMenu = () => {
             />
             {searchText && (
               <button className="menu-search-clear" onClick={() => setSearchText('')} aria-label="Clear search">
-                <FiX size={15} />
+                <X size={15} />
               </button>
             )}
           </div>

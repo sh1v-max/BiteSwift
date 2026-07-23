@@ -59,6 +59,28 @@
 
 a { text-decoration: none; color: inherit; }
 
+/* ── Lazy-route loading fallback ──────────────────────────
+   Lives here (not in a page's own CSS) because Suspense shows
+   this before the lazy chunk — and its stylesheet — has loaded. */
+
+.page-loading {
+  min-height: calc(100vh - var(--bs-nav-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--bs-border);
+  border-top-color: var(--bs-amber);
+  border-radius: 50%;
+  animation: page-spin 0.7s linear infinite;
+}
+
+@keyframes page-spin { to { transform: rotate(360deg); } }
+
 body {
   padding-top: var(--bs-nav-h);
   font-family: 'Poppins', sans-serif;
@@ -173,17 +195,6 @@ body {
   gap: 8px;
   flex-shrink: 0;
 }
-
-/* Online status dot */
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.status-online  { background: var(--bs-success); box-shadow: 0 0 0 2px rgba(var(--bs-success-rgb), 0.25); }
-.status-offline { background: var(--bs-danger);  box-shadow: 0 0 0 2px rgba(var(--bs-danger-rgb), 0.25); }
 
 /* Cart */
 .cart-btn {
@@ -314,8 +325,7 @@ body {
 
 @media (max-width: 768px) {
   .navbar-nav,
-  .auth-btn:not(.drawer-auth-btn),
-  .status-dot { display: none; }
+  .auth-btn:not(.drawer-auth-btn) { display: none; }
 
   .hamburger    { display: flex; }
   .mobile-drawer { display: flex; }

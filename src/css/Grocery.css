@@ -1,0 +1,194 @@
+/* ═══════════════════════════════════════════════════════
+   GROCERY PAGE — Coming Soon  (Signal Orange theme)
+═══════════════════════════════════════════════════════ */
+
+.grocery-page {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+}
+
+.grocery-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 24px 48px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.grocery-icon {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.grocery-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bs-amber);
+  margin: 0 0 12px;
+}
+
+.grocery-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: var(--bs-text-1);
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  line-height: 1.15;
+}
+
+.grocery-lede {
+  font-size: 0.98rem;
+  color: var(--bs-text-2);
+  line-height: 1.7;
+  margin: 0 0 28px;
+}
+
+.grocery-notify-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.grocery-notify-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border: 1.5px solid var(--bs-border);
+  border-radius: var(--bs-radius-pill);
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--bs-text-1);
+  background: var(--bs-bg-alt);
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.grocery-notify-form input:focus {
+  border-color: var(--bs-amber);
+  background: var(--bs-card);
+}
+
+.grocery-notify-form input::placeholder { color: var(--bs-text-3); }
+
+.grocery-notify-form button {
+  padding: 12px 24px;
+  background: var(--bs-amber);
+  color: var(--bs-text-inv);
+  border: none;
+  border-radius: var(--bs-radius-pill);
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 108px;
+}
+
+.grocery-notify-form button:hover {
+  background: var(--bs-amber-dk);
+  transform: translateY(-1px);
+}
+
+.grocery-notify-form button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.grocery-notify-form button:disabled:hover { transform: none; }
+
+.grocery-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2.5px solid rgba(var(--bs-text-inv-rgb), 0.35);
+  border-top-color: var(--bs-text-inv);
+  border-radius: 50%;
+  animation: grocery-spin 0.7s linear infinite;
+}
+
+@keyframes grocery-spin { to { transform: rotate(360deg); } }
+
+.grocery-notified {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--bs-success);
+  background: rgba(var(--bs-success-rgb), 0.08);
+  border: 1px solid rgba(var(--bs-success-rgb), 0.22);
+  padding: 12px 20px;
+  border-radius: var(--bs-radius-pill);
+  margin-bottom: 20px;
+}
+
+.grocery-back {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bs-text-2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.grocery-back:hover { color: var(--bs-amber); }
+
+/* ── Preview strip ──────────────────────────────────────── */
+
+.grocery-preview {
+  background: var(--bs-bg-alt);
+  border-top: 1px solid var(--bs-border);
+  padding: 32px 24px 44px;
+  text-align: center;
+}
+
+.grocery-preview-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bs-text-3);
+  margin: 0 0 16px;
+}
+
+.grocery-preview-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.grocery-preview-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--bs-card);
+  border: 1px solid var(--bs-border);
+  border-radius: var(--bs-radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bs-text-2);
+  opacity: 0.75;
+}
+
+.grocery-preview-chip span { font-size: 1.1rem; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .grocery-hero { padding: 48px 20px 36px; }
+  .grocery-notify-form { flex-direction: column; }
+  .grocery-notify-form button { width: 100%; }
+}
