@@ -1,7 +1,7 @@
 import { MdStarRate } from 'react-icons/md'
 import { IMG_CDN_URL } from '../../utils/constants'
-import { useDispatch } from 'react-redux'
-import { addItem } from '../../utils/cartSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { addItem, incrementQuantity, decrementQuantity } from '../../utils/cartSlice'
 
 const ratingColor = (rating) => {
   if (rating >= 4.3) return 'var(--bs-success)'
@@ -11,19 +11,30 @@ const ratingColor = (rating) => {
 
 const ItemList = ({ items }) => {
   const dispatch = useDispatch()
-  const handleAddItem = (item) => dispatch(addItem(item))
+  const cartItems = useSelector((store) => store.cart.items)
+
+  const getQuantity = (id) => cartItems.find((c) => c.card.info.id === id)?.quantity || 0
 
   return (
     <div className="menu-item-list">
       {items.map((item) => {
-        const { id, name, price, defaultPrice, ratings, imageId, description } = item.card.info
+        const { id, name, price, defaultPrice, ratings, imageId, description, itemAttribute, ribbon } = item.card.info
         const rating = ratings?.aggregatedRating?.rating
         const ratingCount = ratings?.aggregatedRating?.ratingCountV2
+        const isVeg = itemAttribute?.vegClassifier === 'VEG'
+        const quantity = getQuantity(id)
 
         return (
           <div key={id} className="menu-items">
             <div className="left">
-              <h2>{name}</h2>
+              <div className="menu-item-name-row">
+                <span
+                  className={`veg-indicator ${isVeg ? 'veg-indicator--veg' : 'veg-indicator--nonveg'}`}
+                  title={isVeg ? 'Veg' : 'Non-veg'}
+                />
+                <h2>{name}</h2>
+                {ribbon?.text && <span className="menu-item-badge">{ribbon.text}</span>}
+              </div>
               <h4>₹{(price ?? defaultPrice ?? 0) / 100}</h4>
               {description && <p>{description.slice(0, 140)}</p>}
               {rating && (
@@ -41,9 +52,17 @@ const ItemList = ({ items }) => {
                   alt={name}
                 />
               )}
-              <button className="add-btn" onClick={() => handleAddItem(item)}>
-                ADD
-              </button>
+              {quantity > 0 ? (
+                <div className="qty-stepper">
+                  <button onClick={() => dispatch(decrementQuantity(id))} aria-label="Decrease quantity">−</button>
+                  <span>{quantity}</span>
+                  <button onClick={() => dispatch(incrementQuantity(id))} aria-label="Increase quantity">+</button>
+                </div>
+              ) : (
+                <button className="add-btn" onClick={() => dispatch(addItem(item))}>
+                  ADD
+                </button>
+              )}
             </div>
           </div>
         )

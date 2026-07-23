@@ -1,33 +1,32 @@
 import { useState, useEffect } from 'react'
 import { MENU_API } from './constants'
+import { getMockMenu } from '../mocks/mockMenus'
 
 const useRestaurantMenu = (resId) => {
   const [resInfo, setResInfo] = useState(null)
-  const [error, setError]     = useState(false)
 
   useEffect(() => {
     fetchData()
   }, [])
 
   const fetchData = async () => {
-    setError(false)
-    setResInfo(null)
     try {
       const data = await fetch(MENU_API + resId)
       const json = await data.json()
       const parsed = json?.data
-      // Swiggy sometimes responds with an empty body when bot-detection triggers
+      // Swiggy's menu API is reliably blocked by bot-detection outside a real
+      // browser session — fall back to a mock menu so the page still works.
       if (parsed && parsed.cards?.length) {
         setResInfo(parsed)
       } else {
-        setError(true)
+        setResInfo(getMockMenu(resId))
       }
     } catch {
-      setError(true)
+      setResInfo(getMockMenu(resId))
     }
   }
 
-  return { resInfo, error, retry: fetchData }
+  return resInfo
 }
 
 export default useRestaurantMenu

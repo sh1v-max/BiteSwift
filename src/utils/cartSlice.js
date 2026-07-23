@@ -1,4 +1,6 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
+
+const findItem = (items, id) => items.find((item) => item.card.info.id === id)
 
 const cartSlice = createSlice({
   name: "cart",
@@ -7,45 +9,36 @@ const cartSlice = createSlice({
   },
   reducers: {
     addItem: (state, action) => {
-
-      // vanilla (older) Redux ==> DON'T MUTATE STATE
-      // const newState = [...state.items];
-      // newState.items.push(action.payload);
-      // return newState
-
-      // but in Redux Toolkit, we can mutate the state directly
-      // we actually have to mutate the state
-      
-      state.items.push(action.payload);
+      const id = action.payload?.card?.info?.id
+      const existing = findItem(state.items, id)
+      if (existing) {
+        existing.quantity += 1
+      } else {
+        state.items.push({ ...action.payload, quantity: 1 })
+      }
     },
-    removeItem: (state) => {
-      state.items.pop();
+    removeItem: (state, action) => {
+      state.items = state.items.filter((item) => item.card.info.id !== action.payload)
+    },
+    incrementQuantity: (state, action) => {
+      const item = findItem(state.items, action.payload)
+      if (item) item.quantity += 1
+    },
+    decrementQuantity: (state, action) => {
+      const item = findItem(state.items, action.payload)
+      if (!item) return
+      if (item.quantity <= 1) {
+        state.items = state.items.filter((i) => i.card.info.id !== action.payload)
+      } else {
+        item.quantity -= 1
+      }
     },
     clearCart: (state) => {
-      //  we need to import the current function to log actual state object before mutation
-      // console.log(current(state));
-      // this will console the current state
-      // console.log(state);
-      state.items.length = 0;
-      // state = [] // but this wont
-      // return { items: [] }; // this will also work
-      // this new object will be replaced inside originalState = {items:[]}
-      // so you can't just write:
-      //? return []
+      state.items.length = 0
     },
   },
 })
 
-export const {addItem, removeItem, clearCart} = cartSlice.actions;
+export const { addItem, removeItem, incrementQuantity, decrementQuantity, clearCart } = cartSlice.actions
 
 export default cartSlice.reducer
-
-//~ it's roughly like this:
-// {
-//   actions: {
-//     addItem,
-//     removeItem,
-//     clearCart
-//   },
-//   reducers
-// }

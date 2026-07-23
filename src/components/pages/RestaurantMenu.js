@@ -1,9 +1,9 @@
 import Shimmer from '../shared/Shimmer'
 import { IMG_CDN_URL } from '../../utils/constants'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import useRestaurantMenu from '../../utils/useRestaurantMenu'
 import { MdStarRate } from 'react-icons/md'
-import { FiArrowLeft } from 'react-icons/fi'
+import { FiArrowLeft, FiSearch, FiX } from 'react-icons/fi'
 import RestaurantCategory from '../restaurant/RestaurantCategory'
 import { useState } from 'react'
 import '../../css/RestaurantMenu.css'
@@ -20,17 +20,11 @@ const ratingColor = (rating) => {
 const RestaurantMenu = () => {
   const { resId } = useParams()
   const navigate = useNavigate()
-  const { resInfo, error, retry } = useRestaurantMenu(resId)
+  const resInfo = useRestaurantMenu(resId)
   const [showIndex, setShowIndex] = useState(0)
-
-  if (error) return (
-    <div className="empty-state">
-      <span>📡</span>
-      <h3>Couldn't load this menu</h3>
-      <p>Swiggy didn't return data for this restaurant. Please try again.</p>
-      <button onClick={retry}>Retry</button>
-    </div>
-  )
+  const [searchText, setSearchText] = useState('')
+  const [vegOnly, setVegOnly] = useState(false)
+  const [bestsellerOnly, setBestsellerOnly] = useState(false)
 
   if (resInfo === null) return <Shimmer />
 
@@ -57,8 +51,33 @@ const RestaurantMenu = () => {
   const rating = avgRating ?? 3.8
   const heroImage = cloudinaryImageId?.startsWith('http') ? cloudinaryImageId : IMG_CDN_URL + cloudinaryImageId
 
+  // ── Search / veg / bestseller filtering ─────────────────────────────
+  const hasActiveFilters = searchText.trim() || vegOnly || bestsellerOnly
+
+  const itemMatchesFilters = (item) => {
+    const info = item?.card?.info
+    if (!info) return false
+    if (vegOnly && info.itemAttribute?.vegClassifier !== 'VEG') return false
+    if (bestsellerOnly && !info.ribbon?.text) return false
+    if (searchText.trim() && !info.name?.toLowerCase().includes(searchText.trim().toLowerCase())) return false
+    return true
+  }
+
+  const filteredCategories = categories
+    .map((category) => ({
+      category,
+      items: (category?.card?.card?.itemCards || []).filter(itemMatchesFilters),
+    }))
+    .filter(({ items }) => items.length > 0)
+
   return (
     <div className="restaurant-page">
+      <div className="menu-breadcrumb">
+        <Link to="/">Home</Link>
+        <span className="breadcrumb-sep">/</span>
+        <span>{name}</span>
+      </div>
+
       <section className="menu-hero">
         <div className="menu-hero-media">
           <img
@@ -97,14 +116,64 @@ const RestaurantMenu = () => {
       </section>
 
       <div className="restaurant-container">
-        {categories.map((category, index) => (
-          <RestaurantCategory
-            key={category?.card?.card?.title}
-            data={category?.card?.card}
-            showItems={index === showIndex}
-            setShowIndex={() => setShowIndex(index === showIndex ? null : index)}
-          />
-        ))}
+        <div className="menu-toolbar">
+          <div className="menu-search">
+            <FiSearch size={16} />
+            <input
+              type="text"
+              placeholder="Search for dishes"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            {searchText && (
+              <button className="menu-search-clear" onClick={() => setSearchText('')} aria-label="Clear search">
+                <FiX size={15} />
+              </button>
+            )}
+          </div>
+
+          <div className="menu-filter-chips">
+            <button
+              className={`menu-filter-chip ${vegOnly ? 'active' : ''}`}
+              onClick={() => setVegOnly((v) => !v)}
+            >
+              <span className="veg-indicator veg-indicator--veg" />
+              Veg only
+            </button>
+            <button
+              className={`menu-filter-chip ${bestsellerOnly ? 'active' : ''}`}
+              onClick={() => setBestsellerOnly((v) => !v)}
+            >
+              🔥 Bestseller
+            </button>
+          </div>
+        </div>
+
+        {hasActiveFilters ? (
+          filteredCategories.length === 0 ? (
+            <div className="menu-no-results">
+              <span>🍽️</span>
+              <p>No dishes match your filters.</p>
+            </div>
+          ) : (
+            filteredCategories.map(({ category, items }) => (
+              <RestaurantCategory
+                key={category?.card?.card?.title}
+                data={{ ...category.card.card, itemCards: items }}
+                forceOpen
+              />
+            ))
+          )
+        ) : (
+          categories.map((category, index) => (
+            <RestaurantCategory
+              key={category?.card?.card?.title}
+              data={category?.card?.card}
+              showItems={index === showIndex}
+              setShowIndex={() => setShowIndex(index === showIndex ? null : index)}
+            />
+          ))
+        )}
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ const Header = () => {
   const [loggedIn, setLoggedIn]     = useState(false)
   const onlineStatus                = useOnlineStatus()
   const cartItems                   = useSelector((store) => store.cart.items)
+  const cartCount                   = cartItems.reduce((sum, item) => sum + item.quantity, 0)
   const location                    = useLocation()
 
   // Adds a hairline shadow once the page scrolls past the top
@@ -56,8 +57,8 @@ const Header = () => {
           {/* Cart */}
           <Link to="/cart" className="cart-btn" aria-label="Cart">
             <FiShoppingCart size={20} />
-            {cartItems.length > 0 && (
-              <span className="cart-badge">{cartItems.length}</span>
+            {cartCount > 0 && (
+              <span className="cart-badge">{cartCount}</span>
             )}
           </Link>
 
@@ -88,7 +89,7 @@ const Header = () => {
           <NavLink to="/about"   className={navLinkClass}>About</NavLink>
           <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
           <NavLink to="/cart"    className={navLinkClass}>
-            Cart {cartItems.length > 0 && `(${cartItems.length})`}
+            Cart {cartCount > 0 && `(${cartCount})`}
           </NavLink>
         </nav>
         <button
