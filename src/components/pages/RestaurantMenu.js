@@ -1,11 +1,15 @@
 import Shimmer from '../shared/Shimmer'
 import { IMG_CDN_URL } from '../../utils/constants'
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router-dom'
 import useRestaurantMenu from '../../utils/useRestaurantMenu'
 import { MdStarRate } from 'react-icons/md'
+import { FiArrowLeft } from 'react-icons/fi'
 import RestaurantCategory from '../restaurant/RestaurantCategory'
 import { useState } from 'react'
 import '../../css/RestaurantMenu.css'
+
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80'
 
 const ratingColor = (rating) => {
   if (rating >= 4.3) return 'var(--bs-success)'
@@ -15,6 +19,7 @@ const ratingColor = (rating) => {
 
 const RestaurantMenu = () => {
   const { resId } = useParams()
+  const navigate = useNavigate()
   const { resInfo, error, retry } = useRestaurantMenu(resId)
   const [showIndex, setShowIndex] = useState(0)
 
@@ -50,23 +55,33 @@ const RestaurantMenu = () => {
   )
 
   const rating = avgRating ?? 3.8
+  const heroImage = cloudinaryImageId?.startsWith('http') ? cloudinaryImageId : IMG_CDN_URL + cloudinaryImageId
 
   return (
-    <div className="restaurant-container">
-      <div className="restaurant-header">
-        <img
-          src={cloudinaryImageId?.startsWith('http') ? cloudinaryImageId : IMG_CDN_URL + cloudinaryImageId}
-          alt={name}
-        />
+    <div className="restaurant-page">
+      <section className="menu-hero">
+        <div className="menu-hero-media">
+          <img
+            src={heroImage}
+            alt={name}
+            onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE }}
+          />
+          <div className="menu-hero-scrim" />
+        </div>
 
-        <div className="res-header-details">
+        <button
+          className="menu-hero-back"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+        >
+          <FiArrowLeft size={18} />
+        </button>
+
+        <div className="menu-hero-content">
           <h1>{name}</h1>
-          <h3>{areaName}</h3>
-          {cuisines?.length > 0 && (
-            <p className="cuisines">{cuisines.join(', ')}</p>
-          )}
+          {areaName && <p className="menu-hero-area">📍 {areaName}</p>}
 
-          <div className="info">
+          <div className="menu-hero-info">
             <span className="rating">
               <MdStarRate style={{ color: ratingColor(rating) }} />
               {rating} ({totalRatingsString || '1K+ ratings'})
@@ -74,17 +89,23 @@ const RestaurantMenu = () => {
             {costForTwoMessage && <span>· {costForTwoMessage}</span>}
             {sla?.slaString && <span>· ⏳ {sla.slaString}</span>}
           </div>
-        </div>
-      </div>
 
-      {categories.map((category, index) => (
-        <RestaurantCategory
-          key={category?.card?.card?.title}
-          data={category?.card?.card}
-          showItems={index === showIndex}
-          setShowIndex={() => setShowIndex(index === showIndex ? null : index)}
-        />
-      ))}
+          {cuisines?.length > 0 && (
+            <p className="menu-hero-cuisines">{cuisines.join(', ')}</p>
+          )}
+        </div>
+      </section>
+
+      <div className="restaurant-container">
+        {categories.map((category, index) => (
+          <RestaurantCategory
+            key={category?.card?.card?.title}
+            data={category?.card?.card}
+            showItems={index === showIndex}
+            setShowIndex={() => setShowIndex(index === showIndex ? null : index)}
+          />
+        ))}
+      </div>
     </div>
   )
 }

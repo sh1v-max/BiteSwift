@@ -6,3 +6,8 @@ AboutMe.md
 
 # Local Netlify folder
 .netlify
+
+# Secrets — never commit real env values
+.env
+.env.local
+.env.*.local
