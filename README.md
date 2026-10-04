@@ -5,6 +5,7 @@
   <p>A high-fidelity, responsive Swiggy clone built with React. BiteSwift delivers real restaurant data, a working cart with quantity tracking and checkout, and a clean, mobile-responsive UI — with graceful fallbacks for the parts of Swiggy's API that actively resist being scraped.</p>
 
   <p>
+    <a href="https://github.com/sh1v-max/BiteSwift/actions/workflows/ci.yml"><img src="https://github.com/sh1v-max/BiteSwift/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
     <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react" alt="React">
     <img src="https://img.shields.io/badge/Redux_Toolkit-2.6-764ABC?logo=redux" alt="Redux Toolkit">
     <img src="https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css" alt="Tailwind CSS">
@@ -75,6 +76,23 @@
     ```
     Bundles the app into `/dist`.
 
+5.  **Run the tests:**
+    ```
+    npm test
+    npm run coverage   # same, with a coverage report
+    ```
+
+## 🧪 Testing
+
+Jest and React Testing Library, run in CI on every push along with the production build. No network needed: every test builds its own Redux store and renders components directly.
+
+- **Cart reducer** — add, quantity bump instead of duplicate entries, increment/decrement (removes at zero), remove by id, clear.
+- **Cart page** — bill math (item total, 5% GST, delivery and platform fees), quantity steppers, both coupon codes, the minimum-order message, and checkout emptying the cart.
+- **Header** — nav links, cart badge shows total quantity, Login/Logout toggle.
+- **Contact page** — form fields, developer links, submit → success → reset.
+
+The cart and checkout flow is covered; listing and menu pages, which depend on Swiggy's API, are not yet.
+
 ## 🏗️ Architectural Notes
 
 A few decisions worth explaining, since they weren't the obvious first choice:
@@ -91,7 +109,8 @@ A few decisions worth explaining, since they weren't the obvious first choice:
 - [ ] **Real backend + persisted cart** — a lightweight backend so cart contents survive a refresh.
 - [ ] **User authentication** — the current Login/Logout button is a visual placeholder only.
 - [ ] **Real payment integration** — checkout is currently a convincing simulation (loading state → order receipt), not a real payment flow.
-- [ ] **Expand automated test coverage** — a handful of tests currently need updating after a component reorganization.
+- [x] **Automated tests in CI** — cart logic, cart page, header and contact page.
+- [ ] **Tests for the data-driven pages** — restaurant listing and menu, with the Swiggy responses mocked.
 
 ## 🤝 Contributing
 

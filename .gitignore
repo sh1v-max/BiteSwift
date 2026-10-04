@@ -11,3 +11,23 @@ AboutMe.md
 .env
 .env.local
 .env.*.local
+
+# Editor / tool output
+.history/
+.vscode/
+.claude/
+CLAUDE.md
+*.tmp.*
+.DS_Store
+Thumbs.db
+
+# Not used by this npm + Parcel project
+deno.lock
+
+# Personal study notes and drafts (kept locally, not part of the app)
+everythingYouNeedToKnow.md
+overview.md
+style.md
+todo.md
+src/components/_archive/
+src/images/

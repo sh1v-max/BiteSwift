@@ -10,7 +10,6 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import RestaurantMenu from './components/pages/RestaurantMenu'
 import UserContext from './utils/UserContext'
 import { Provider } from 'react-redux'
-import AboutClass from './components/_archive/AboutClass'
 import appStore from './utils/appStore'
 import Cart from './components/pages/Cart'
 import CollectionPage from './components/pages/CollectionPage'
@@ -54,7 +53,6 @@ const appRouter = createBrowserRouter([
       {
         path: '/about',
         element: <About />,
-        // element: <AboutClass />,
       },
       {
         path: '/contact',

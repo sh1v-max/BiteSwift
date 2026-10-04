@@ -1,141 +1,35 @@
+import { render, screen, fireEvent, act } from '@testing-library/react'
+import Contact from '../components/pages/Contact'
 
+describe('Contact page', () => {
+  it('renders the heading and the form fields', () => {
+    render(<Contact />)
+    expect(screen.getByRole('heading', { name: 'Contact Us', level: 1 })).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Your Name')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Your Email')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Your Message')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Send Message' })).toBeInTheDocument()
+  })
 
+  it('links to the developer profiles', () => {
+    render(<Contact />)
+    expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute('href', 'https://github.com/sh1v-max')
+    expect(screen.getByRole('link', { name: 'Email' })).toHaveAttribute('href', 'mailto:singhshiv0427@gmail.com')
+  })
 
-import { render, screen } from "@testing-library/react";
-import Contact from "../components/Contact";
-import "@testing-library/jest-dom"
+  it('shows a success message after submitting, and can reset', () => {
+    jest.useFakeTimers()
+    render(<Contact />)
+    fireEvent.change(screen.getByPlaceholderText('Your Name'), { target: { value: 'Asha' } })
+    fireEvent.change(screen.getByPlaceholderText('Your Email'), { target: { value: 'asha@example.com' } })
+    fireEvent.change(screen.getByPlaceholderText('Your Message'), { target: { value: 'Hello!' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Send Message' }))
 
-//  these are individual test cases
-test("Should load contact us component", () => {
-  render(<Contact />);
-  
-  const heading = screen.getAllByRole("heading");
-  
-  // Assertion
-  expect(heading).toBeInTheDocument();
-});
+    act(() => jest.advanceTimersByTime(1200))
+    expect(screen.getByText('Message sent!')).toBeInTheDocument()
 
-text("Should load button inside Contact component", () => {
-  render(<Contact />);
-
-  const button = screen.getByRole("button");
-
-  // Assertion
-  expect(button).toBeInTheDocument();
-});
-
-text("Should load input name inside Contact component", () => {
-  render(<Contact />);
-
-  const inputName = screen.getByPlaceholderText("name");
-
-  // Assertion
-  expect(inputName).toBeInTheDocument();
-});
-
-text("Should load 2 input boxes on the Contact component", () => {
-  render(<Contact />);
-
-  // Querying
-  const inputBoxes = screen.getAllByRole("textbox");
-
-  //console.log(inputBoxes.length);
-
-  // Assertion
-
-  expect(inputBoxes.length).toBe(2);
-});
-
-// these are grouped test cases
-describe("Contact Us Page Test Case", () => {
-
-  // we can write "it", instead of "test", it works fine
-  it("Should load contact us component", () => {
-    render(<Contact />);
-    
-    const heading = screen.getAllByRole("heading");
-    
-    // Assertion
-    expect(heading).toBeInTheDocument();
-  });
-  
-  it("Should load button inside Contact component", () => {
-    render(<Contact />);
-  
-    const button = screen.getByRole("button");
-  
-    // Assertion
-    expect(button).toBeInTheDocument();
-  });
-  
-  it("Should load input name inside Contact component", () => {
-    render(<Contact />);
-  
-    const inputName = screen.getByPlaceholderText("name");
-  
-    // Assertion
-    expect(inputName).toBeInTheDocument();
-  });
-  
-  it("Should load 2 input boxes on the Contact component", () => {
-    render(<Contact />);
-  
-    // Querying
-    const inputBoxes = screen.getAllByRole("textbox");
-  
-    //console.log(inputBoxes.length);
-  
-    // Assertion
-  
-    expect(inputBoxes.length).toBe(2);
-  });
-});
-
-describe("Contact Us Page Test Case", () => {
-  beforeAll(() => {
-    console.log("Before All");
-  });
-
-  beforeEach(() => {
-    console.log("Before Each");
-  });
-
-  afterAll(() => {
-    console.log("After All");
-  });
-
-  afterEach(() => {
-    console.log("After Each");
-  });
-
-  it("Should load button inside Contact component", () => {
-    render(<Contact />);
-
-    const button = screen.getByRole("button");
-
-    // Assertion
-    expect(button).toBeInTheDocument();
-  });
-
-  it("Should load input name inside Contact component", () => {
-    render(<Contact />);
-
-    const inputName = screen.getByPlaceholderText("name");
-
-    // Assertion
-    expect(inputName).toBeInTheDocument();
-  });
-
-  it("Should load 2 input boxes on the Contact component", () => {
-    render(<Contact />);
-
-    // Querying
-    const inputBoxes = screen.getAllByRole("textbox");
-
-    //console.log(inputBoxes.length);
-
-    // Assertion
-
-    expect(inputBoxes.length).toBe(2);
-  });
-});
+    fireEvent.click(screen.getByRole('button', { name: 'Send another message' }))
+    expect(screen.getByPlaceholderText('Your Name')).toHaveValue('')
+    jest.useRealTimers()
+  })
+})
