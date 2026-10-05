@@ -18,4 +18,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test -- --ci
-      - run: npm run build
+      # Parcel can segfault on exit on Linux after a successful build (same
+      # reason netlify.toml checks for dist/index.html), so judge the build
+      # by its output rather than its exit code. CI starts with no dist/,
+      # so a real build failure still fails this step.
+      - name: Production build
+        run: |
+          npm run build || echo "parcel exited with $?"
+          test -f dist/index.html
